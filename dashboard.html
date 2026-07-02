@@ -1181,6 +1181,25 @@
             background: rgba(248,113,113,0.2);
         }
 
+        /* 品牌资产文件夹展开状态 */
+        .kb-folder.expanded {
+            border-color: var(--accent-purple) !important;
+            background: rgba(139, 92, 246, 0.08) !important;
+            grid-row: span 2;
+        }
+
+        .folder-file-list {
+            margin-top: 8px;
+            padding-top: 6px;
+            border-top: 1px solid rgba(139,92,246,0.25);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .folder-file-item:hover {
+            background: rgba(30,41,59,0.9) !important;
+        }
+
         /* ========== 上传区域 ========== */
         .upload-zone {
             border: 2px dashed var(--border-color);
@@ -2593,39 +2612,24 @@
 
     <!-- 文件上传 -->
     <div class="modal-overlay" id="upload-modal">
-        <div class="modal">
+        <div class="modal" style="max-width: 480px;">
             <div class="modal-header">
-                <div class="modal-title">📤 上传文件到资料库</div>
+                <div class="modal-title">📤 上传文件到品牌资产库</div>
                 <button class="modal-close" onclick="closeModal('upload-modal')">✕</button>
             </div>
             <div class="form-group">
-                <label class="form-label">文件分类</label>
-                <select class="form-input" id="upload-category">
-                    <option value="brand-logo">品牌Logo</option>
-                    <option value="brand-image">品牌图片</option>
-                    <option value="content-draft">内容草稿</option>
-                    <option value="content-final">成品内容</option>
-                    <option value="strategy-doc">策略文档</option>
-                    <option value="report">数据报告</option>
-                    <option value="event-photo">活动照片</option>
-                    <option value="other">其他</option>
-                </select>
+                <label class="form-label">目标分类</label>
+                <select class="form-input" id="upload-category"></select>
             </div>
             <div class="form-group">
-                <label class="form-label">文件名称</label>
-                <input type="text" class="form-input" id="upload-filename" placeholder="输入文件名称">
+                <label class="form-label">文件名称 <span style="color:#ef4444">*</span></label>
+                <input type="text" class="form-input" id="upload-filename" placeholder="输入文件名称（含扩展名）">
             </div>
             <div class="form-group">
-                <label class="form-label">文件描述</label>
-                <textarea class="form-input" id="upload-desc" placeholder="输入文件描述..."></textarea>
+                <label class="form-label">文件大小（选填）</label>
+                <input type="text" class="form-input" id="upload-filesize" placeholder="如：2.5MB">
             </div>
-            <div class="upload-zone" onclick="handleFileSelect()">
-                <div class="upload-zone-icon">📁</div>
-                <div class="upload-zone-text">点击选择文件或拖拽文件到此处</div>
-                <div style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">支持 JPG/PNG/PDF/Word/Excel，单个文件最大 50MB</div>
-            </div>
-            <div id="upload-preview" style="margin-top: 16px;"></div>
-            <button class="btn btn-primary btn-block" onclick="uploadFile()" style="margin-top: 16px;">确认上传</button>
+            <button class="btn btn-primary btn-block" style="margin-top: 12px;" onclick="uploadFile()">确认上传</button>
         </div>
     </div>
 
@@ -3018,12 +3022,39 @@
             _prefix: 'vd_',
             _defaults: {
                 brandAssets: [
-                    { icon: '🏠', name: '品牌Logo', count: 5 },
-                    { icon: '🖼️', name: '品牌图片', count: 32 },
-                    { icon: '🎨', name: 'VI素材', count: 18 },
-                    { icon: '📹', name: '品牌视频', count: 4 },
-                    { icon: '📄', name: '品牌手册', count: 3 },
-                    { icon: '🎵', name: '品牌音频', count: 2 }
+                    { id: 1, icon: '🏠', name: '品牌Logo', count: 5, files: [
+                        { id: 101, name: '万科西北_标准LOGO.png', size: '2.1MB', date: '2026-05-20' },
+                        { id: 102, name: '万科西北_横版LOGO.ai', size: '4.5MB', date: '2026-05-18' },
+                        { id: 103, name: '万科西北_白底LOGO.jpg', size: '856KB', date: '2026-05-15' },
+                        { id: 104, name: '万科西北_反白LOGO.svg', size: '128KB', date: '2026-05-10' },
+                        { id: 105, name: '好有趣社群LOGO.png', size: '1.2MB', date: '2026-04-28' }
+                    ] },
+                    { id: 2, icon: '🖼️', name: '品牌图片', count: 32, files: [
+                        { id: 201, name: '交付季主视觉KV_横版.jpg', size: '8.5MB', date: '2026-07-01' },
+                        { id: 202, name: '交付季主视觉KV_竖版.jpg', size: '7.2MB', date: '2026-07-01' },
+                        { id: 203, name: '好好生活品牌月海报.psd', size: '45MB', date: '2026-06-15' },
+                        { id: 204, name: '一平米社群活动图.png', size: '3.8MB', date: '2026-06-10' }
+                    ] },
+                    { id: 3, icon: '🎨', name: 'VI素材', count: 18, files: [
+                        { id: 301, name: '辅助图形_建筑线条.ai', size: '2.3MB', date: '2026-05-25' },
+                        { id: 302, name: '品牌色值规范卡.pdf', size: '1.5MB', date: '2026-05-20' },
+                        { id: 303, name: '字体包_思源黑体.zip', size: '12MB', date: '2026-05-08' }
+                    ] },
+                    { id: 4, icon: '📹', name: '品牌视频', count: 4, files: [
+                        { id: 401, name: '兴交付品牌片.mp4', size: '256MB', date: '2026-06-28' },
+                        { id: 402, name: '工地开放日vlog.mp4', size: '85MB', date: '2026-07-02' },
+                        { id: 403, name: '业主访谈短片.mp4', size: '120MB', date: '2026-06-22' },
+                        { id: 404, name: '一平米跑团混剪.mp4', size: '65MB', date: '2026-05-20' }
+                    ] },
+                    { id: 5, icon: '📄', name: '品牌手册', count: 3, files: [
+                        { id: 501, name: '品牌VI规范手册V3.0.pdf', size: '5.2MB', date: '2026-05-20' },
+                        { id: 502, name: '品牌故事手册.docx', size: '2.8MB', date: '2026-05-12' },
+                        { id: 503, name: '视觉应用规范.pdf', size: '8.6MB', date: '2026-04-15' }
+                    ] },
+                    { id: 6, icon: '🎵', name: '品牌音频', count: 2, files: [
+                        { id: 601, name: '品牌提示音.mp3', size: '856KB', date: '2026-05-01' },
+                        { id: 602, name: '交付季背景音乐.wav', size: '12MB', date: '2026-06-20' }
+                    ] }
                 ],
                 brandGuides: [
                     { name: '品牌VI规范手册 V3.0', size: '5.2MB', date: '2026-05-20' },
@@ -3752,15 +3783,66 @@
                 fList.forEach((f, idx) => {
                     const div = document.createElement('div');
                     div.className = 'kb-folder';
-                    div.style.cssText = 'position: relative;';
+                    div.style.cssText = 'position: relative; cursor: pointer;';
+                    const fileId = 'folder-files-' + (f.id || idx);
+
+                    // 构建文件列表HTML
+                    let fileListHtml = '';
+                    const files = f.files || [];
+                    if (files.length > 0) {
+                        fileListHtml = '<div class="folder-file-list" id="' + fileId + '" style="display:none;">';
+                        files.forEach((fi, fiIdx) => {
+                            fileListHtml += `
+                                <div class="folder-file-item" style="display:flex;align-items:center;gap:6px;padding:5px 8px;margin:3px 0;background:rgba(15,23,42,0.6);border-radius:6px;font-size:12px;">
+                                    <span>📎</span>
+                                    <span style="flex:1;color:#cbd5e1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${fi.name}">${fi.name}</span>
+                                    <span style="color:#64748b;font-size:10px;">${fi.size || ''}</span>
+                                    <button onclick="event.stopPropagation();removeFolderFile(${f.id || idx},${fi.id});" style="background:none;border:none;color:#f87171;font-size:11px;cursor:pointer;padding:0 3px;">✕</button>
+                                </div>`;
+                        });
+                        fileListHtml += '</div>';
+                    }
+
                     div.innerHTML = `
                         <div class="kb-folder-icon">${f.icon}</div>
                         <div class="kb-folder-name">${f.name}</div>
-                        <div class="kb-folder-count">${f.count} 个文件</div>
-                        <button onclick="DataManager.remove('brandAssets',${f.id});renderBrandPage();" style="position:absolute;top:6px;right:6px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;display:none;">删除</button>
+                        <div class="kb-folder-count">${files.length} 个文件</div>
+                        ${fileListHtml}
+                        <button onclick="event.stopPropagation();deleteAssetFolder(${f.id || idx});" style="position:absolute;top:6px;right:6px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;display:none;">删除</button>
+                        <div class="folder-add-file-area" id="add-file-${f.id || idx}" style="display:none;padding:8px;margin-top:4px;">
+                            <input type="text" placeholder="输入文件名称" style="width:60%;padding:4px 8px;background:#0f172a;border:1px solid #334155;color:#e2e8f0;border-radius:5px;font-size:12px;" onkeydown="if(event.key==='Enter')addFileToFolder(${f.id || idx},this)">
+                            <button onclick="addFileToFolder(${f.id || idx},this.previousElementSibling)" style="padding:4px 10px;background:#6366f1;color:#fff;border:none;border-radius:5px;font-size:11px;cursor:pointer;">添加</button>
+                        </div>
+                        <div style="position:absolute;bottom:6px;right:6px;display:flex;gap:4px;" class="folder-actions">
+                            <button onclick="event.stopPropagation();toggleAddFile(${f.id || idx});" style="background:rgba(99,102,241,0.15);color:#a5b4fc;border:1px solid rgba(99,102,241,0.3);border-radius:5px;padding:2px 7px;font-size:10px;cursor:pointer;display:none;">+ 添加</button>
+                        </div>
                     `;
-                    div.onmouseenter = () => div.querySelector('button').style.display = '';
-                    div.onmouseleave = () => div.querySelector('button').style.display = 'none';
+
+                    // 点击展开/收起
+                    div.addEventListener('click', function() {
+                        const fileArea = this.querySelector('.folder-file-list');
+                        if (fileArea) {
+                            const isHidden = fileArea.style.display === 'none';
+                            fileArea.style.display = isHidden ? '' : 'none';
+                            if (isHidden) {
+                                this.style.borderColor = '#6366f1';
+                                this.classList.add('expanded');
+                            } else {
+                                this.style.borderColor = '';
+                                this.classList.remove('expanded');
+                            }
+                        }
+                    });
+
+                    div.onmouseenter = () => {
+                        div.querySelector('button[style*="top:6px"]').style.display = '';
+                        div.querySelector('.folder-actions').style.display = 'flex';
+                    };
+                    div.onmouseleave = () => {
+                        div.querySelector('button[style*="top:6px"]').style.display = 'none';
+                        div.querySelector('.folder-actions').style.display = 'none';
+                    };
+
                     folders.appendChild(div);
                 });
             }
@@ -4450,8 +4532,27 @@ function filterReviewItems() {
             if (el) {
                 el.style.display = 'flex';
                 el.classList.add('active');
-                // 确保在最上层
                 el.style.zIndex = '10000';
+
+                // 上传弹窗：动态加载文件夹列表
+                if (id === 'upload-modal') {
+                    const catSelect = document.getElementById('upload-category');
+                    if (catSelect) {
+                        const assets = DataManager.load('brandAssets');
+                        catSelect.innerHTML = '';
+                        assets.forEach((f, i) => {
+                            const opt = document.createElement('option');
+                            opt.value = f.id || i;
+                            opt.textContent = f.icon + ' ' + f.name;
+                            catSelect.appendChild(opt);
+                        });
+                    }
+                    // 清空之前的输入
+                    const nameInput = document.getElementById('upload-filename');
+                    if (nameInput) nameInput.value = '';
+                    const sizeInput = document.getElementById('upload-filesize');
+                    if (sizeInput) sizeInput.value = '';
+                }
             } else {
                 console.error('Modal not found:', id);
             }
@@ -4576,9 +4677,82 @@ function filterReviewItems() {
         function uploadFile() {
             const name = document.getElementById('upload-filename').value;
             if (!name) { alert('请输入文件名称'); return; }
-            // 添加到品牌资产库（模拟文件上传）
-            alert('✅ 文件「' + name + '」已上传到资料库！\n\n提示：实际部署后可对接真实文件存储服务。');
+            const catSelect = document.getElementById('upload-category');
+            const folderIdx = parseInt(catSelect.value);
+            const size = document.getElementById('upload-filesize').value || '';
+
+            const assets = DataManager.load('brandAssets');
+            let folder = null;
+            for (const f of assets) {
+                if ((f.id || assets.indexOf(f)) === folderIdx) { folder = f; break; }
+            }
+
+            if (folder) {
+                if (!folder.files) folder.files = [];
+                folder.files.push({ id: Date.now(), name, size, date: new Date().toISOString().slice(0, 10) });
+                DataManager.set('brandAssets', assets);
+
+                // 清空表单
+                document.getElementById('upload-filename').value = '';
+                document.getElementById('upload-filesize').value = '';
+            } else {
+                alert('未找到目标分类，请重试');
+                return;
+            }
+
             closeModal('upload-modal');
+            renderBrandPage();
+        }
+
+        // ===== 品牌资产文件夹操作 =====
+        function deleteAssetFolder(idxOrId) {
+            if (!confirm('确定删除此资产分类？')) return;
+            DataManager.remove('brandAssets', idxOrId);
+            renderBrandPage();
+        }
+
+        function toggleAddFile(folderIdx) {
+            const area = document.getElementById('add-file-' + folderIdx);
+            if (!area) return;
+            area.style.display = area.style.display === '' ? 'none' : '';
+            if (area.style.display === '') {
+                area.querySelector('input').focus();
+            }
+        }
+
+        function addFileToFolder(folderIdx, inputEl) {
+            const name = (inputEl && inputEl.value) ? inputEl.value.trim() : '';
+            if (!name) { alert('请输入文件名称'); return; }
+
+            const assets = DataManager.load('brandAssets');
+            let folder = null;
+            for (const f of assets) {
+                if ((f.id || assets.indexOf(f)) === folderIdx) { folder = f; break; }
+            }
+            if (!folder) return;
+
+            if (!folder.files) folder.files = [];
+            folder.files.push({ id: Date.now(), name, size: '', date: new Date().toISOString().slice(0, 10) });
+            DataManager.set('brandAssets', assets);
+
+            // 隐藏输入框
+            const addArea = document.getElementById('add-file-' + folderIdx);
+            if (addArea) addArea.style.display = 'none';
+
+            renderBrandPage();
+        }
+
+        function removeFolderFile(folderIdx, fileId) {
+            const assets = DataManager.load('brandAssets');
+            let folder = null;
+            for (const f of assets) {
+                if ((f.id || assets.indexOf(f)) === folderIdx) { folder = f; break; }
+            }
+            if (!folder || !folder.files) return;
+
+            folder.files = folder.files.filter(fi => fi.id !== fileId);
+            DataManager.set('brandAssets', assets);
+            renderBrandPage();
         }
 
         function refreshAll(evt) {
