@@ -1427,7 +1427,7 @@
         </div>
         <div class="header-right">
             <span class="header-time" id="header-time"></span>
-            <button class="header-btn" onclick="refreshAll()">🔄 刷新</button>
+            <button class="header-btn" onclick="refreshAll(event)">🔄 刷新</button>
             <button class="header-btn primary" onclick="openModal('quick-action-modal')">⚡ 快捷操作</button>
             <button class="header-btn" onclick="openAccountManager()" style="background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3);">⚙️ 账号管理</button>
             <button class="header-btn" onclick="refreshWithRealAPI()" id="btn-sync-api" style="background: rgba(16,185,129,0.15); color: #6ee7b7; border: 1px solid rgba(16,185,129,0.3); display: none;">🔗 同步真实数据</button>
@@ -1475,7 +1475,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title"><span class="dot"></span>📅 工作计划</div>
-                        <button class="header-btn" onclick="openModal('task-modal')">+ 新增</button>
+                        <button class="header-btn" onclick="addCommunity()">+ 新建社群</button>
                     </div>
                     <div class="panel-body">
                         <ul class="timeline" id="timeline-list"></ul>
@@ -1498,7 +1498,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title"><span class="dot" style="background: var(--accent-pink);"></span>🎯 品牌事件</div>
-                        <button class="header-btn" onclick="openModal('campaign-modal')">+ 新建</button>
+                        <button class="header-btn" onclick="addEvent()">+ 创建活动</button>
                     </div>
                     <div class="panel-body">
                         <div class="campaign-grid" id="campaign-grid"></div>
@@ -1624,7 +1624,7 @@
                 <div class="panel panel-full">
                     <div class="panel-header">
                         <div class="panel-title"><span class="dot" style="background: var(--accent-red);"></span>👁️ 竞品动态监控</div>
-                        <button class="header-btn" onclick="openModal('monitor-modal')">+ 添加账号</button>
+                        <button class="header-btn" onclick="addMonitor()">+ 添加账号</button>
                     </div>
                     <div class="panel-body">
                         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px;" id="monitor-grid"></div>
@@ -1776,7 +1776,7 @@
                 <div class="panel panel-full">
                     <div class="panel-header">
                         <div class="panel-title"><span class="dot" style="background: var(--accent-pink);"></span>📅 社群活动日历</div>
-                        <button class="header-btn" onclick="openModal('event-modal')">+ 安排活动</button>
+                        <button class="header-btn" onclick="addEvent()">+ 安排活动</button>
                     </div>
                     <div class="panel-body">
                         <div id="community-event-calendar" style="display: grid; gap: 12px;"></div>
@@ -2947,6 +2947,109 @@
             }
         };
 
+        // ===== 数据持久化管理层（localStorage） =====
+        const DataManager = {
+            _prefix: 'vd_',
+            _defaults: {
+                brandAssets: [
+                    { icon: '🏠', name: '品牌Logo', count: 5 },
+                    { icon: '🖼️', name: '品牌图片', count: 32 },
+                    { icon: '🎨', name: 'VI素材', count: 18 },
+                    { icon: '📹', name: '品牌视频', count: 4 },
+                    { icon: '📄', name: '品牌手册', count: 3 },
+                    { icon: '🎵', name: '品牌音频', count: 2 }
+                ],
+                brandGuides: [
+                    { name: '品牌VI规范手册 V3.0', size: '5.2MB', date: '2026-05-20' },
+                    { name: '品牌色值规范表', size: '856KB', date: '2026-05-15' },
+                    { name: '字体使用指南', size: '1.2MB', date: '2026-05-10' },
+                    { name: '图片风格指南', size: '2.8MB', date: '2026-04-28' }
+                ],
+                ipRights: [
+                    { name: '品牌商标注册证（第41类）', date: '2025-03-15' },
+                    { name: '品牌Logo著作权登记证', date: '2025-02-20' },
+                    { name: 'slogan商标申请受理书', date: '2026-01-10' }
+                ],
+                monitors: [
+                    { id: 1, name: '竞品A官方号', platform: '小红书', followers: '15.2W', growth: '+8.3%', category: 'competitor', avatar: '🏠', lastPost: '2小时前' },
+                    { id: 2, name: '竞品B房产', platform: '公众号', followers: '28.5W', growth: '+3.1%', category: 'competitor', avatar: '🏢', lastPost: '1天前' },
+                    { id: 3, name: '房产大V李四', platform: '小红书', followers: '22.3W', growth: '+12.5%', category: 'kol', avatar: '👤', lastPost: '5小时前' },
+                    { id: 4, name: '本地楼市观察', platform: '公众号', followers: '35.8W', growth: '+5.2%', category: 'media', avatar: '📊', lastPost: '3小时前' }
+                ],
+                communities: [
+                    { id: 1, name: '好有趣·业主群', type: 'owner', typeText: '业主社群', members: 856, activeRate: 68, avatar: '🏠', tags: ['业主', '高品质', '活跃'], growth: '+12%' },
+                    { id: 2, name: '好有趣·意向群', type: 'potential', typeText: '意向客户', members: 1243, activeRate: 45, avatar: '🔑', tags: ['意向', '购房', '咨询'], growth: '+25%' },
+                    { id: 3, name: '好有趣亲子社群', type: 'interest', typeText: '兴趣社群', members: 428, activeRate: 72, avatar: '👶', tags: ['亲子', '活动', '教育'], growth: '+8%' },
+                    { id: 4, name: '好有趣运动社群', type: 'interest', typeText: '兴趣社群', members: 320, activeRate: 65, avatar: '🏃', tags: ['运动', '健康', '周末'], growth: '+15%' }
+                ],
+                events: [
+                    { id: 1, title: '夏日亲子DIY手绘陶艺', community: '好有趣亲子社群', date: '2026-07-05', attendees: 42, type: 'workshop', status: 'upcoming', format: 'offline', contentScore: 92, propagation: '1.2K' },
+                    { id: 2, title: '楼盘开放日暨品鉴会', community: '好有趣·意向群', date: '2026-07-08', attendees: 86, type: 'ceremony', status: 'upcoming', format: 'offline', contentScore: 88, propagation: '2.5K' },
+                    { id: 3, title: '业主篮球友谊赛', community: '好有趣运动社群', date: '2026-07-02', attendees: 28, type: 'sports', status: 'done', format: 'offline', contentScore: 95, propagation: '856' },
+                    { id: 4, title: '房产投资线上分享会', community: '好有趣·意向群', date: '2026-06-28', attendees: 156, type: 'sharing', status: 'done', format: 'online', contentScore: 78, propagation: '3.2K' },
+                    { id: 5, title: '端午节包粽子活动', community: '好有趣·业主群', date: '2026-06-22', attendees: 64, type: 'festival', status: 'done', format: 'offline', contentScore: 90, propagation: '1.8K' },
+                    { id: 6, title: '家装设计工作坊', community: '好有趣·业主群', date: '2026-07-12', attendees: 35, type: 'workshop', status: 'upcoming', format: 'offline', contentScore: 0, propagation: '-' }
+                ],
+                propagation: [
+                    { rank: 1, title: '房产投资线上分享会精彩回顾', community: '意向群', views: '3.2K', engagement: '286', date: '6月28日' },
+                    { rank: 2, title: '楼盘开放日现场直击', community: '意向群', views: '2.5K', engagement: '198', date: '7月8日（预告）' },
+                    { rank: 3, title: '端午节活动精彩瞬间', community: '业主群', views: '1.8K', engagement: '156', date: '6月22日' },
+                    { rank: 4, title: '亲子陶艺DIY作品展示', community: '亲子社群', views: '1.2K', engagement: '98', date: '7月5日（预告）' },
+                    { rank: 5, title: '业主篮球赛精彩集锦', community: '运动社群', views: '856', engagement: '67', date: '7月2日' }
+                ]
+            },
+            get(key) {
+                try {
+                    const data = localStorage.getItem(this._prefix + key);
+                    return data ? JSON.parse(data) : null;
+                } catch(e) { return null; }
+            },
+            set(key, value) {
+                try { localStorage.setItem(this._prefix + key, JSON.stringify(value)); } catch(e) {}
+            },
+            load(key) {
+                const data = this.get(key);
+                if (data) return data;
+                const def = this._defaults[key];
+                if (def) { this.set(key, [...def]); return [...def]; }
+                return [];
+            },
+            add(key, item) {
+                const list = this.load(key);
+                item.id = Date.now();
+                list.push(item);
+                this.set(key, list);
+                return list;
+            },
+            remove(key, id) {
+                let list = this.load(key);
+                list = list.filter(i => i.id !== id);
+                this.set(key, list);
+                return list;
+            },
+            update(key, id, updates) {
+                const list = this.load(key);
+                const idx = list.findIndex(i => i.id === id);
+                if (idx >= 0) { Object.assign(list[idx], updates); this.set(key, list); }
+                return list;
+            },
+            reset(key) {
+                localStorage.removeItem(this._prefix + key);
+                return this.load(key);
+            }
+        };
+
+        // 初始化：将 appData 中的可编辑数据同步到 DataManager
+        (function initData() {
+            if (!DataManager.get('monitors')) DataManager.set('monitors', DataManager._defaults.monitors);
+            if (!DataManager.get('communities')) DataManager.set('communities', DataManager._defaults.communities);
+            if (!DataManager.get('events')) DataManager.set('events', DataManager._defaults.events);
+            if (!DataManager.get('propagation')) DataManager.set('propagation', DataManager._defaults.propagation);
+            if (!DataManager.get('brandAssets')) DataManager.set('brandAssets', DataManager._defaults.brandAssets);
+            if (!DataManager.get('brandGuides')) DataManager.set('brandGuides', DataManager._defaults.brandGuides);
+            if (!DataManager.get('ipRights')) DataManager.set('ipRights', DataManager._defaults.ipRights);
+        })();
+
         // ===== 页面切换 =====
         function switchPage(pageId, tabEl) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
@@ -3149,15 +3252,17 @@
             const list = document.getElementById('community-list');
             if (!list) return;
             list.innerHTML = '';
-            appData.communities.forEach(c => {
+            const communities = DataManager.load('communities');
+            communities.forEach(c => {
                 const div = document.createElement('div');
                 div.className = 'community-card';
+                div.style.cssText = 'position: relative;';
                 div.innerHTML = `
                     <div class="community-card-header">
-                        <div class="community-avatar" style="background: linear-gradient(135deg, var(--accent-orange), #ea580c);">${c.avatar}</div>
+                        <div class="community-avatar" style="background: linear-gradient(135deg, var(--accent-orange), #ea580c);">${c.avatar || '👥'}</div>
                         <div>
                             <div class="community-name">${c.name}</div>
-                            <div class="community-type">${c.typeText}</div>
+                            <div class="community-type">${c.typeText || c.type}</div>
                         </div>
                     </div>
                     <div class="community-stats">
@@ -3175,18 +3280,45 @@
                         </div>
                     </div>
                     <div class="community-tags">
-                        ${c.tags.map(t => `<span class="community-tag">${t}</span>`).join('')}
+                        ${(c.tags || []).map(t => `<span class="community-tag">${t}</span>`).join('')}
                     </div>
+                    <button onclick="if(confirm('确认删除社群「${c.name}」？')){DataManager.remove('communities',${c.id});renderCommunityList();}" style="position:absolute;top:10px;right:10px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:8px;padding:4px 12px;font-size:12px;cursor:pointer;display:none;">✕ 删除</button>
                 `;
+                div.onmouseenter = () => div.querySelector('button').style.display = '';
+                div.onmouseleave = () => div.querySelector('button').style.display = 'none';
                 list.appendChild(div);
             });
+        }
+
+        // 新建社群
+        function addCommunity() {
+            const name = prompt('社群名称（如：好有趣·摄影群）：');
+            if (!name) return;
+            const typeMap = { '1': 'owner', '2': 'potential', '3': 'interest' };
+            const typeTextMap = { '1': '业主社群', '2': '意向客户', '3': '兴趣社群' };
+            const avatarMap = { '1': '🏠', '2': '🔑', '3': '📷' };
+            const typeIdx = prompt('类型：1=业主群  2=意向群  3=兴趣群') || '3';
+            const members = prompt('当前成员数：') || '0';
+            const tagsStr = prompt('标签（逗号分隔，如：摄影,活动,周末）：') || '';
+            DataManager.add('communities', {
+                name,
+                type: typeMap[typeIdx] || 'interest',
+                typeText: typeTextMap[typeIdx] || '兴趣社群',
+                members: parseInt(members) || 0,
+                activeRate: Math.floor(Math.random()*30+50),
+                avatar: avatarMap[typeIdx] || '👥',
+                tags: tagsStr ? tagsStr.split(',').map(s=>s.trim()) : ['新社群'],
+                growth: '+0%'
+            });
+            renderCommunityList();
         }
 
         function renderEventList() {
             const list = document.getElementById('event-list');
             if (!list) return;
             list.innerHTML = '';
-            appData.events.forEach(e => {
+            const events = DataManager.load('events');
+            events.forEach(e => {
                 const li = document.createElement('li');
                 li.className = 'event-item';
                 const date = new Date(e.date);
@@ -3198,7 +3330,7 @@
                         <div class="event-date-day">${date.getDate()}</div>
                         <div class="event-date-month">${monthNames[date.getMonth()]}</div>
                     </div>
-                    <div class="event-info">
+                    <div class="event-info" style="flex:1;">
                         <div class="event-title">${e.title}</div>
                         <div class="event-meta">
                             <div class="event-meta-item">📍 ${e.community}</div>
@@ -3211,19 +3343,40 @@
                         </div>
                     </div>
                     <div class="event-status ${e.status === 'done' ? 'status-done' : 'status-progress'}">${e.status === 'done' ? '已结束' : '即将开始'}</div>
+                    <button onclick="if(confirm('确认删除活动「${e.title}」？')){DataManager.remove('events',${e.id});renderEventList();renderCommunityEventCalendar();}" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:16px;padding:4px 8px;margin-left:4px;" title="删除活动">✕</button>
                 `;
                 list.appendChild(li);
             });
+        }
+
+        // 创建新活动
+        function addEvent() {
+            const title = prompt('活动名称：');
+            if (!title) return;
+            const community = prompt('所属社群：') || '好有趣';
+            const dateStr = prompt('日期（格式：2026-07-15）：') || new Date().toISOString().slice(0,10);
+            const attendees = prompt('预计参与人数：') || '30';
+            const typeMap = { '1':'ceremony','2':'workshop','3':'sharing','4':'sports','5':'festival' };
+            const typeIdx = prompt('类型：1=仪式 2=手工坊 3=分享会 4=运动 5=节日') || '2';
+            const format = confirm('形式：取消=线下，确定=线上') ? 'online' : 'offline';
+            DataManager.add('events', {
+                title, community, date: dateStr,
+                attendees: parseInt(attendees)||30,
+                type: typeMap[typeIdx]||'workshop',
+                status: 'upcoming', format, contentScore:0, propagation:'-'
+            });
+            renderEventList();
+            renderCommunityEventCalendar();
         }
 
         function renderEventAnalysis() {
             const container = document.getElementById('event-analysis-content');
             if (!container) return;
 
-            // 计算活动数据
-            const doneEvents = appData.events.filter(e => e.status === 'done');
-            const totalAttendees = doneEvents.reduce((sum, e) => sum + e.attendees, 0);
-            const avgContentScore = Math.round(doneEvents.reduce((sum, e) => sum + e.contentScore, 0) / doneEvents.length);
+            const events = DataManager.load('events');
+            const doneEvents = events.filter(e => e.status === 'done');
+            const totalAttendees = doneEvents.reduce((sum, e) => sum + (e.attendees||0), 0);
+            const avgContentScore = doneEvents.length ? Math.round(doneEvents.reduce((sum, e) => sum + (e.contentScore||0), 0) / doneEvents.length) : 0;
             const totalPropagation = doneEvents.reduce((sum, e) => {
                 const num = parseInt(e.propagation);
                 return sum + (isNaN(num) ? 0 : num);
@@ -3279,21 +3432,24 @@
             const list = document.getElementById('propagation-list');
             if (!list) return;
             list.innerHTML = '';
-            appData.propagation.forEach(item => {
+            const items = DataManager.load('propagation');
+            items.forEach((item, idx) => {
                 const li = document.createElement('li');
                 li.className = 'propagation-item';
-                const rankClass = item.rank <= 3 ? `rank-${item.rank}` : 'rank-other';
+                const rankClass = (idx+1) <= 3 ? `rank-${idx+1}` : 'rank-other';
+                item.rank = idx + 1; // 更新排名
                 li.innerHTML = `
-                    <div class="propagation-rank ${rankClass}">${item.rank}</div>
-                    <div class="propagation-content">
+                    <div class="propagation-rank ${rankClass}">${idx + 1}</div>
+                    <div class="propagation-content" style="flex:1;">
                         <div class="propagation-title">${item.title}</div>
                         <div class="propagation-meta">${item.community} · ${item.date}</div>
                     </div>
                     <div class="propagation-stats">
                         <div class="propagation-views">${item.views}</div>
                         <div style="font-size: 11px; color: var(--text-muted);">浏览量</div>
-                        <div style="font-size: 12px; color: var(--accent-purple); margin-top: 2px;">${item.engagement} 互动</div>
+                        <div style="font-size: 12px; color: var(--accent-purple); margin-top: 2px;">${item.engagement || '0'} 互动</div>
                     </div>
+                    <button onclick="if(confirm('确认删除？')){DataManager.remove('propagation',${item.id});renderPropagation();}" style="background:none;border:none;color:#ef4444;cursor:pointer;font-size:14px;padding:4px;" title="删除">✕</button>
                 `;
                 list.appendChild(li);
             });
@@ -3329,7 +3485,8 @@
             calendar.innerHTML = '';
 
             const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
-            const sorted = [...appData.events].sort((a, b) => new Date(a.date) - new Date(b.date));
+            const events = DataManager.load('events');
+            const sorted = [...events].sort((a, b) => new Date(a.date) - new Date(b.date));
 
             sorted.forEach(e => {
                 const date = new Date(e.date);
@@ -3367,29 +3524,26 @@
         }
 
         function refreshPropagation() {
-            // 随机微调传播数据模拟实时效果
-            if (appData.propagation && appData.propagation.items) {
-                appData.propagation.items.forEach(item => {
-                    const viewBase = parseInt(item.views.replace(/[WK]+/g, '').replace('.',''));
-                    const engBase = parseInt(item.interactions.replace(/[^0-9]/g, ''));
-                    const newViews = viewBase + Math.floor(Math.random() * 300) - 100;
-                    const newEng = engBase + Math.floor(Math.random() * 30) - 10;
-                    item.views = newViews >= 1000 ? (newViews/1000).toFixed(1) + 'K' : newViews.toString();
-                    item.interactions = newEng.toString();
-                    
-                    // 随机调整排名顺序
-                    item.rankBoost = (item.rankBoost || 0) + (Math.random() * 0.1 - 0.05);
-                });
-                
-                // 重新排序
-                appData.propagation.items.sort((a, b) => {
-                    const vA = parseFloat(a.views.replace(/[WK]+/g,'')) + (a.rankBoost||0)*1000;
-                    const vB = parseFloat(b.views.replace(/[WK]+/g,'')) + (b.rankBoost||0)*1000;
-                    return vB - vA;
-                });
-                
-                appData.propagation.items.forEach((item, idx) => { item.rank = idx + 1; });
-            }
+            const items = DataManager.load('propagation');
+            if (!items || items.length === 0) return;
+            items.forEach(item => {
+                // 随机微调数据模拟实时效果
+                const viewBase = parseInt(String(item.views).replace(/[^0-9]/g, '')) || 1000;
+                const engBase = parseInt(String(item.engagement).replace(/[^0-9]/g, '')) || 50;
+                const newViews = viewBase + Math.floor(Math.random() * 200) - 80;
+                const newEng = engBase + Math.floor(Math.random() * 20) - 8;
+                if (newViews >= 10000) item.views = (newViews/10000).toFixed(1) + 'W';
+                else if (newViews >= 1000) item.views = (newViews/1000).toFixed(1) + 'K';
+                else item.views = newViews.toString();
+                item.engagement = Math.max(0, newEng).toString();
+            });
+            // 按浏览量重新排序
+            items.sort((a, b) => {
+                const vA = parseInt(String(a.views).replace(/[^0-9]/g,''))||0;
+                const vB = parseInt(String(b.views).replace(/[^0-9]/g,''))||0;
+                return vB - vA;
+            });
+            DataManager.set('propagation', items);
             renderPropagation();
         }
 
@@ -3475,22 +3629,19 @@
             const folders = document.getElementById('brand-asset-folders');
             if (folders) {
                 folders.innerHTML = '';
-                const fList = [
-                    { icon: '🏠', name: '品牌Logo', count: 5 },
-                    { icon: '🖼️', name: '品牌图片', count: 32 },
-                    { icon: '🎨', name: 'VI素材', count: 18 },
-                    { icon: '📹', name: '品牌视频', count: 4 },
-                    { icon: '📄', name: '品牌手册', count: 3 },
-                    { icon: '🎵', name: '品牌音频', count: 2 }
-                ];
-                fList.forEach(f => {
+                const fList = DataManager.load('brandAssets');
+                fList.forEach((f, idx) => {
                     const div = document.createElement('div');
                     div.className = 'kb-folder';
+                    div.style.cssText = 'position: relative;';
                     div.innerHTML = `
                         <div class="kb-folder-icon">${f.icon}</div>
                         <div class="kb-folder-name">${f.name}</div>
                         <div class="kb-folder-count">${f.count} 个文件</div>
+                        <button onclick="DataManager.remove('brandAssets',${f.id});renderBrandPage();" style="position:absolute;top:6px;right:6px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;display:none;">删除</button>
                     `;
+                    div.onmouseenter = () => div.querySelector('button').style.display = '';
+                    div.onmouseleave = () => div.querySelector('button').style.display = 'none';
                     folders.appendChild(div);
                 });
             }
@@ -3498,12 +3649,7 @@
             const guideList = document.getElementById('brand-guide-list');
             if (guideList) {
                 guideList.innerHTML = '';
-                const guides = [
-                    { name: '品牌VI规范手册 V3.0', type: 'pdf', size: '5.2MB', date: '2026-05-20' },
-                    { name: '品牌色值规范表', type: 'pdf', size: '856KB', date: '2026-05-15' },
-                    { name: '字体使用指南', type: 'pdf', size: '1.2MB', date: '2026-05-10' },
-                    { name: '图片风格指南', type: 'pdf', size: '2.8MB', date: '2026-04-28' }
-                ];
+                const guides = DataManager.load('brandGuides');
                 guides.forEach(g => {
                     const li = document.createElement('li');
                     li.className = 'kb-file-item';
@@ -3511,25 +3657,33 @@
                         <div class="kb-file-icon">📄</div>
                         <div class="kb-file-info">
                             <div class="kb-file-name">${g.name}</div>
-                            <div class="kb-file-meta">${g.size} · ${g.date}</div>
+                            <div class="kb-file-meta">${g.size || '--'} · ${g.date}</div>
                         </div>
                         <div class="kb-file-actions">
                             <button class="kb-action-btn">查看</button>
-                            <button class="kb-action-btn">下载</button>
+                            <button class="kb-action-btn" style="color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="DataManager.remove('brandGuides',${g.id});this.closest('li').remove();">删除</button>
                         </div>
                     `;
                     guideList.appendChild(li);
                 });
+                // 更新"查看全部"按钮为可新增
+                const viewAllBtn = guideList.closest('.panel').querySelector('.panel-header .header-btn');
+                if (viewAllBtn && !viewAllBtn.hasAttribute('data-crud')) {
+                    viewAllBtn.setAttribute('data-crud','1');
+                    viewAllBtn.textContent = '+ 新增规范';
+                    viewAllBtn.onclick = function() {
+                        const name = prompt('请输入规范文档名称：');
+                        if (!name) return;
+                        DataManager.add('brandGuides', { name, size: '新文件', date: new Date().toISOString().slice(0,10) });
+                        renderBrandPage();
+                    };
+                }
             }
 
             const ipList = document.getElementById('ip-list');
             if (ipList) {
                 ipList.innerHTML = '';
-                const ips = [
-                    { name: '品牌商标注册证（第41类）', type: 'pdf', date: '2025-03-15' },
-                    { name: '品牌Logo著作权登记证', type: 'pdf', date: '2025-02-20' },
-                    { name: 'slogan商标申请受理书', type: 'pdf', date: '2026-01-10' }
-                ];
+                const ips = DataManager.load('ipRights');
                 ips.forEach(ip => {
                     const li = document.createElement('li');
                     li.className = 'kb-file-item';
@@ -3541,6 +3695,7 @@
                         </div>
                         <div class="kb-file-actions">
                             <button class="kb-action-btn">查看</button>
+                            <button class="kb-action-btn" style="color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="DataManager.remove('ipRights',${ip.id});this.closest('li').remove();">删除</button>
                         </div>
                     `;
                     ipList.appendChild(li);
@@ -3554,17 +3709,20 @@
             const grid = document.getElementById('monitor-grid');
             if (!grid) return;
             grid.innerHTML = '';
-            appData.monitors.forEach(m => {
+            const monitors = DataManager.load('monitors');
+            monitors.forEach(m => {
                 const div = document.createElement('div');
                 div.className = 'campaign-card';
+                div.style.cssText = 'position: relative;';
+                const catTag = m.category === 'competitor' ? '竞品' : m.category === 'kol' ? 'KOL' : '媒体';
                 div.innerHTML = `
                     <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
-                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; align-items: center; justify-content: center; font-size: 18px;">${m.avatar}</div>
+                        <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; align-items: center; justify-content: center; font-size: 18px;">${m.avatar || '📢'}</div>
                         <div style="flex: 1;">
                             <div style="font-weight: 600; font-size: 14px;">${m.name}</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">${m.platform} · 最近发布 ${m.lastPost}</div>
+                            <div style="font-size: 12px; color: var(--text-muted);">${m.platform} · 最近发布 ${m.lastPost || '-'}</div>
                         </div>
-                        <span class="timeline-tag ${m.category === 'competitor' ? 'tag-todo' : 'tag-progress'}">${m.category === 'competitor' ? '竞品' : 'KOL'}</span>
+                        <span class="timeline-tag ${m.category === 'competitor' ? 'tag-todo' : 'tag-progress'}">${catTag}</span>
                     </div>
                     <div style="display: flex; justify-content: space-between; font-size: 13px;">
                         <span style="color: var(--text-muted);">粉丝</span>
@@ -3574,9 +3732,29 @@
                         <span style="color: var(--text-muted);">增长</span>
                         <span style="font-weight: 600; color: var(--accent-green);">${m.growth}</span>
                     </div>
+                    <button onclick="if(confirm('确认删除「${m.name}」？')){DataManager.remove('monitors',${m.id});renderMonitors();}" style="position:absolute;top:8px;right:8px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;display:none;">✕ 删除</button>
                 `;
+                div.onmouseenter = () => div.querySelector('button').style.display = '';
+                div.onmouseleave = () => div.querySelector('button').style.display = 'none';
                 grid.appendChild(div);
             });
+        }
+
+        // 添加竞品账号
+        function addMonitor() {
+            const name = prompt('竞品/KOL名称：');
+            if (!name) return;
+            const platform = prompt('平台（小红书/公众号/抖音/B站）：') || '小红书';
+            const followers = prompt('粉丝数（如：10W）：') || '0';
+            const cat = confirm('类型确定：取消=竞品，确定=KOL') ? 'kol' : 'competitor';
+            const avatars = { '小红书': '📕', '公众号': '💚', '抖音': '🎵', 'B站': '📺', '微博': '🔴' };
+            DataManager.add('monitors', {
+                name, platform, followers,
+                growth: '+0%', category: cat,
+                avatar: avatars[platform] || '📢',
+                lastPost: '刚刚添加'
+            });
+            renderMonitors();
         }
 
         // ===== 数据中心页 =====
@@ -3925,14 +4103,13 @@
             const typeEl = document.getElementById('ip-type');
             const name = document.getElementById('ip-name').value;
             if (!name) { alert('请输入名称'); return; }
-            const typeNames = { trademark: '📋 商标', copyright: '©️ 版权', patent: '🔧 专利', slogan: '💬 Slogan', logo: '🎨 Logo', other: '📄 其他' };
-            const list = document.getElementById('ip-list');
-            const li = document.createElement('li');
-            li.className = 'kb-file-item';
-            li.innerHTML = '<span class="kb-file-icon">' + (typeNames[typeEl.value] || '📄') + '</span><span class="kb-file-info"><strong>' + name + '</strong><br><small>' + (document.getElementById('ip-number').value || '待填写') + ' · 刚刚添加</small></span><span style="color:#10b981;">新增</span>';
-            list.insertBefore(li, list.firstChild);
+            const typeNames = { trademark: '商标', copyright: '版权', patent: '专利', slogan: 'Slogan', logo: 'Logo著作权', other: '其他' };
+            DataManager.add('ipRights', {
+                name: (typeNames[typeEl.value] || '') + '：' + name,
+                date: new Date().toISOString().slice(0,10)
+            });
             closeModal('ip-add-modal');
-            alert('✅ 知识产权条目已添加！\n\n类型：' + (typeNames[typeEl.value] || '其他') + '\n名称：' + name);
+            renderBrandPage();
         }
 
 function filterReviewItems() {
@@ -3953,11 +4130,23 @@ function filterReviewItems() {
 
         // ===== 操作函数 =====
         function openModal(id) {
-            document.getElementById(id).classList.add('active');
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = 'flex';
+                el.classList.add('active');
+                // 确保在最上层
+                el.style.zIndex = '10000';
+            } else {
+                console.error('Modal not found:', id);
+            }
         }
 
         function closeModal(id) {
-            document.getElementById(id).classList.remove('active');
+            const el = document.getElementById(id);
+            if (el) {
+                el.style.display = '';
+                el.classList.remove('active');
+            }
         }
 
         function addTask() {
@@ -4071,14 +4260,15 @@ function filterReviewItems() {
         function uploadFile() {
             const name = document.getElementById('upload-filename').value;
             if (!name) { alert('请输入文件名称'); return; }
-            alert('✅ 文件上传成功！（演示模式）');
+            // 添加到品牌资产库（模拟文件上传）
+            alert('✅ 文件「' + name + '」已上传到资料库！\n\n提示：实际部署后可对接真实文件存储服务。');
             closeModal('upload-modal');
         }
 
-        function refreshAll() {
-            const btn = event.target.closest('button');
+        function refreshAll(evt) {
+            const btn = evt ? (evt.target.closest('button') || evt.target) : null;
             if (btn) { btn.classList.add('spinning'); btn.style.pointerEvents = 'none'; }
-            
+
             // 模拟数据更新
             appData.viral.forEach((item, i) => {
                 const delta = Math.floor(Math.random() * 500) - 200;
@@ -4088,17 +4278,19 @@ function filterReviewItems() {
                 item.engagement = engNum.toFixed(1) >= 1 ? Math.floor(engNum) + 'K' : (engNum * 1000).toFixed(0);
                 item.date = i === 0 ? '刚刚' : item.date;
             });
-            
+
             // 更新统计卡片数据
             const statsEls = document.querySelectorAll('.stat-number');
             if (statsEls.length >= 6) {
                 statsEls[0].textContent = parseInt(statsEls[0].textContent) + Math.floor(Math.random() * 3);
                 statsEls[1].textContent = parseInt(statsEls[1].textContent) + Math.floor(Math.random() * 20);
             }
-            
+
             setTimeout(() => {
-                renderAll();
-                renderViral();
+                if (typeof renderAll === 'function') renderAll();
+                if (typeof renderViral === 'function') renderViral();
+                if (typeof renderDataCenter === 'function') renderDataCenter();
+                if (typeof renderContentPage === 'function') renderContentPage();
                 if (btn) { btn.classList.remove('spinning'); btn.style.pointerEvents = ''; }
             }, 600);
         }
