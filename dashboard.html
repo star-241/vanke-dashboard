@@ -4686,32 +4686,51 @@ function filterReviewItems() {
                 return;
             }
 
-            // 模拟测试连接（实际应调用真实API）
+            // 真实API测试连接
             document.getElementById('bind-test-result').innerHTML = '<span style="color: #f59e0b;">⏳ 正在测试连接...</span>';
 
-            setTimeout(() => {
-                // 模拟成功（实际项目中这里应该调用真实API测试）
-                accountData._connected = true;
-                accountData._accountName = accountData.appId || accountData.openId || accountData.clientKey || '已配置';
-                accounts[platformKey] = accountData;
-                localStorage.setItem('dashboard_accounts', JSON.stringify(accounts));
-                document.getElementById('bind-test-result').innerHTML = '<span style="color: #10b981;">✅ 连接成功！账号已保存</span>';
-                // 绑定微信后显示同步按钮
-                const btnSync = document.getElementById('btn-sync-api');
-                if (btnSync && platformKey === 'wechat') btnSync.style.display = 'inline-flex';
-                setTimeout(() => {
-                    hideBindForm();
-                    loadAccounts();
-                }, 1000);
-            }, 800);
+            try {
+                const testRes = await callWechatAPI('wechat-stats', { days: 1 });
+                if (testRes.success && testRes.summary) {
+                    accountData._connected = true;
+                    accountData._accountName = testRes.accountName || accountData.appId || '已配置';
+                    accounts[platformKey] = accountData;
+                    localStorage.setItem('dashboard_accounts', JSON.stringify(accounts));
+                    document.getElementById('bind-test-result').innerHTML = '<span style="color: #10b981;">✅ 连接成功！账号已保存</span>';
+                    const btnSync = document.getElementById('btn-sync-api');
+                    if (btnSync && platformKey === 'wechat') btnSync.style.display = 'inline-flex';
+                    setTimeout(() => {
+                        hideBindForm();
+                        loadAccounts();
+                    }, 1000);
+                } else {
+                    document.getElementById('bind-test-result').innerHTML = '<span style="color: #ef4444;">❌ 连接失败：' + (testRes.error || 'AppID或AppSecret不正确') + '</span>';
+                }
+            } catch (err) {
+                document.getElementById('bind-test-result').innerHTML = '<span style="color: #ef4444;">❌ 网络错误：' + err.message + '</span>';
+            }
         }
 
-        function testAccount(platformKey) {
+        async function testAccount(platformKey) {
             const accounts = JSON.parse(localStorage.getItem('dashboard_accounts') || '{}');
             const account = accounts[platformKey];
             if (!account) return;
 
-            alert('⏳ 测试连接中...\n\n平台：' + PLATFORMS[platformKey].name + '\n状态：模拟测试通过 ✅\n\n（演示模式：正式版将调用真实API测试连接）');
+            if (platformKey === 'wechat') {
+                alert('⏳ 正在测试微信API连接...\n\n请稍候，正在调用真实接口验证...');
+                try {
+                    const res = await callWechatAPI('wechat-stats', { days: 1 });
+                    if (res.success && res.summary) {
+                        alert('✅ 连接测试成功！\n\n平台：' + PLATFORMS[platformKey].name + '\n状态：API连接正常 ✅\n公众号名称：' + (res.accountName || '已获取') + '\n\n数据已就绪，可点击「同步真实数据」拉取内容。');
+                    } else {
+                        alert('❌ 连接失败\n\n平台：' + PLATFORMS[platformKey].name + '\n错误：' + (res.error || 'AppID或AppSecret不正确') + '\n\n请检查绑定信息是否正确。');
+                    }
+                } catch (err) {
+                    alert('❌ 网络错误\n\n' + err.message);
+                }
+            } else {
+                alert('ℹ️ ' + PLATFORMS[platformKey].name + '\n\n当前仅微信公众号支持真实API对接。\n其他平台（视频号/小红书/抖音）暂使用本地存储配置，后续将逐步开放。');
+            }
         }
 
         function removeAccount(platformKey) {
