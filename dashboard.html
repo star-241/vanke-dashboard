@@ -1118,6 +1118,69 @@
         .dot-wechat { background: #07c160; }
         .dot-xhs { background: #ff2442; }
 
+        /* 日历内容条目 */
+        .cal-content-list {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .cal-content-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 5px;
+            padding: 3px 5px 3px 4px;
+            font-size: 10.5px;
+            position: relative;
+            cursor: default;
+            transition: background 0.15s;
+        }
+
+        .cal-content-item:hover {
+            background: rgba(30, 41, 59, 0.9);
+        }
+
+        .cal-content-item:hover .cal-delete-btn {
+            display: block;
+        }
+
+        .cal-platform-dot {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 8px;
+            flex-shrink: 0;
+        }
+
+        .cal-content-title {
+            flex: 1;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: #cbd5e1;
+        }
+
+        .cal-delete-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: #f87171;
+            font-size: 9px;
+            cursor: pointer;
+            padding: 0 2px;
+            line-height: 1;
+            flex-shrink: 0;
+            border-radius: 3px;
+        }
+        .cal-delete-btn:hover {
+            background: rgba(248,113,113,0.2);
+        }
+
         /* ========== 上传区域 ========== */
         .upload-zone {
             border: 2px dashed var(--border-color);
@@ -1560,8 +1623,8 @@
                     <div class="panel-header">
                         <div class="panel-title"><span class="dot"></span>📅 内容发布日历</div>
                         <div style="display: flex; gap: 8px;">
-                            <button class="header-btn" onclick="openModal('content-publish-modal')">+ 发布内容</button>
-                            <button class="header-btn" onclick="openModal('calendar-import-modal')">📥 导入日历</button>
+                            <button class="header-btn" onclick="openModal('content-publish-modal')">+ 记录推送</button>
+                            <button class="header-btn" onclick="openModal('calendar-import-modal')">📥 批量导入</button>
                         </div>
                     </div>
                     <div class="panel-body">
@@ -2598,15 +2661,15 @@
             <button class="btn btn-primary btn-block" onclick="addMonitorAccount()">添加监控</button>
         </div>
     </div>
-    <!-- 内容发布 -->
+    <!-- 记录已推送内容 -->
     <div class="modal-overlay" id="content-publish-modal">
-        <div class="modal" style="max-width: 520px;">
+        <div class="modal" style="max-width: 540px;">
             <div class="modal-header">
-                <div class="modal-title">📝 发布内容</div>
+                <div class="modal-title">📝 记录已推送内容</div>
                 <button class="modal-close" onclick="closeModal('content-publish-modal')">✕</button>
             </div>
             <div class="form-group">
-                <label class="form-label">发布平台</label>
+                <label class="form-label">推送平台 <span style="color:#ef4444">*</span></label>
                 <select class="form-input" id="publish-platform">
                     <option value="xiaohongshu">小红书</option>
                     <option value="wechat">微信公众号</option>
@@ -2615,8 +2678,8 @@
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">内容标题</label>
-                <input type="text" class="form-input" id="publish-title" placeholder="输入内容标题">
+                <label class="form-label">内容标题 <span style="color:#ef4444">*</span></label>
+                <input type="text" class="form-input" id="publish-title" placeholder="输入已推送的内容标题">
             </div>
             <div class="form-group">
                 <label class="form-label">内容类型</label>
@@ -2625,73 +2688,76 @@
                     <option value="image">单图/海报</option>
                     <option value="video">短视频</option>
                     <option value="carousel">轮播图</option>
-                    <option value="live">直播预告</option>
+                    <option value="live">直播</option>
                 </select>
             </div>
             <div class="form-group">
-                <label class="form-label">关联策略目标</label>
-                <select class="form-input" id="publish-strategy">
-                    <option value="">不关联</option>
-                    <option value="s1">Q3品牌升级 - 品牌认知提升</option>
-                    <option value="s2">Q3品牌升级 - 社群活跃度+30%</option>
-                    <option value="s3">Q3品牌升级 - 线上传播曝光100W+</option>
-                </select>
+                <label class="form-label">实际推送日期 <span style="color:#ef4444">*</span></label>
+                <input type="date" class="form-input" id="publish-date">
             </div>
             <div class="form-group">
-                <label class="form-label">计划发布时间</label>
-                <input type="datetime-local" class="form-input" id="publish-schedule" value="2026-07-02T14:00">
+                <label class="form-label">数据（选填）</label>
+                <div style="display:flex;gap:8px;">
+                    <input type="text" class="form-input" id="publish-views" placeholder="阅读/播放量" style="flex:1;">
+                    <input type="text" class="form-input" id="publish-likes" placeholder="点赞数" style="flex:1;">
+                    <input type="text" class="form-input" id="publish-comments" placeholder="评论数" style="flex:1;">
+                </div>
             </div>
             <div class="form-group">
                 <label class="form-label">备注</label>
-                <textarea class="form-input" id="publish-note" rows="3" placeholder="补充说明、素材需求等"></textarea>
+                <textarea class="form-input" id="publish-note" rows="2" placeholder="补充说明（选填）"></textarea>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-primary btn-block" onclick="submitPublish()">提交发布</button>
+                <button class="btn btn-primary btn-block" onclick="submitPublish()">确认记录</button>
                 <button class="btn btn-block" style="background: transparent; color: var(--text-muted); border: 1px solid #334155;" onclick="closeModal('content-publish-modal')">取消</button>
             </div>
         </div>
     </div>
 
-    <!-- 日历导入 -->
+    <!-- 批量导入推送记录 -->
     <div class="modal-overlay" id="calendar-import-modal">
-        <div class="modal" style="max-width: 480px;">
+        <div class="modal" style="max-width: 560px;">
             <div class="modal-header">
-                <div class="modal-title">📅 导入日历</div>
+                <div class="modal-title">📥 批量导入推送记录</div>
                 <button class="modal-close" onclick="closeModal('calendar-import-modal')">✕</button>
             </div>
-            <div style="padding: 16px; background: rgba(99,102,241,0.06); border-radius: 12px; margin-bottom: 16px; border-left: 3px solid #6366f1;">
-                <div style="font-size: 12px; color: #a5b4fc; margin-bottom: 4px;">💡 支持格式</div>
-                <div style="font-size: 13px; color: #e2e8f0;">.ics 日历文件 / .csv 排期表 / Excel 日程表</div>
+            <div style="padding: 14px; background: rgba(99,102,241,0.06); border-radius: 10px; margin-bottom: 14px; border-left: 3px solid #6366f1;">
+                <div style="font-size: 12px; color: #a5b4fc; margin-bottom: 4px;">💡 支持两种导入方式</div>
+                <div style="font-size: 13px; color: #e2e8f0;">方式1：直接从 Excel/表格 复制数据，粘贴到下方文本框</div>
+                <div style="font-size: 13px; color: #e2e8f0; margin-top: 4px;">方式2：上传 .csv / .xlsx 文件自动解析</div>
             </div>
             <div class="form-group">
-                <label class="form-label">选择文件</label>
-                <div style="border: 2px dashed #334155; border-radius: 10px; padding: 24px; text-align: center; cursor: pointer;" 
-                     onmouseover="this.style.borderColor='#6366f1';this.style.background='rgba(99,102,241,0.04)'" 
+                <label class="form-label">📋 粘贴表格数据（推荐）</label>
+                <textarea class="form-input" id="import-table-data" rows="6" placeholder="从 Excel 或在线表格复制后直接粘贴，例如：
+日期	平台	标题	类型	阅读量	点赞
+2026-07-02	小红书	万科交付季｜理想城的夏天	图文	3.2W	256
+2026-07-03	微信公众号	兴交付·好好生活	文章	1.8W	189
+2026-07-05	视频号	工地开放日vlog	短视频	5.6K	342"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">或 📁 上传文件（.csv /.xlsx）</label>
+                <div style="border: 2px dashed #334155; border-radius: 10px; padding: 20px; text-align: center; cursor: pointer;"
+                     onmouseover="this.style.borderColor='#6366f1';this.style.background='rgba(99,102,241,0.04)'"
                      onmouseout="this.style.borderColor='#334155';this.style.background='transparent'"
                      onclick="document.getElementById('calendar-file-input').click()">
-                    <div style="font-size: 32px; margin-bottom: 8px;">📁</div>
-                    <div style="font-size: 13px; color: #94a3b8;">点击或拖拽文件到此处</div>
-                    <div style="font-size: 11px; color: #64748b; margin-top: 4px;">支持 .ics / .csv / .xlsx 格式</div>
-                    <input type="file" id="calendar-file-input" accept=".ics,.csv,.xlsx,.xls" style="display:none;" onchange="handleCalendarFile(this)">
+                    <div style="font-size: 28px; margin-bottom: 6px;">📁</div>
+                    <div style="font-size: 13px; color: #94a3b8;">点击选择文件</div>
+                    <div style="font-size: 11px; color: #64748b; margin-top: 4px;">支持 .csv / .xlsx 格式</div>
+                    <input type="file" id="calendar-file-input" accept=".csv,.xlsx,.xls" style="display:none;" onchange="handleCalendarFile(this)">
                 </div>
                 <div id="calendar-file-name" style="font-size: 12px; color: #10b981; margin-top: 8px; display: none;"></div>
             </div>
-            <div class="form-group">
-                <label class="form-label">导入选项</label>
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #cbd5e1; cursor: pointer; margin-bottom: 8px;">
-                    <input type="checkbox" checked style="accent-color: #6366f1;"> 自动识别活动类型
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #cbd5e1; cursor: pointer; margin-bottom: 8px;">
-                    <input type="checkbox" checked style="accent-color: #6366f1;"> 跳过重复日期
-                </label>
-                <label style="display: flex; align-items: center; gap: 8px; font-size: 13px; color: #cbd5e1; cursor: pointer;">
-                    <input type="checkbox" style="accent-color: #6366f1;"> 同步到社群日历
-                </label>
+            <div id="import-preview-area" style="display:none;margin-bottom:14px;">
+                <label class="form-label">📊 预览（将导入 <span id="import-count">0</span> 条）</label>
+                <div id="import-preview-table" style="max-height:200px;overflow:auto;border:1px solid #334155;border-radius:8px;"></div>
             </div>
             <div style="display: flex; gap: 10px;">
-                <button class="btn btn-primary btn-block" onclick="importCalendar()">开始导入</button>
+                <button class="btn btn-primary btn-block" onclick="importCalendar()">确认导入</button>
+                <button class="btn btn-block" style="background: rgba(99,102,241,0.1); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3);" onclick="previewImportData()">预览数据</button>
                 <button class="btn btn-block" style="background: transparent; color: var(--text-muted); border: 1px solid #334155;" onclick="closeModal('calendar-import-modal')">取消</button>
             </div>
+        </div>
+    </div>
         </div>
     </div>
 
@@ -2996,7 +3062,8 @@
                     { rank: 3, title: '端午节活动精彩瞬间', community: '业主群', views: '1.8K', engagement: '156', date: '6月22日' },
                     { rank: 4, title: '亲子陶艺DIY作品展示', community: '亲子社群', views: '1.2K', engagement: '98', date: '7月5日（预告）' },
                     { rank: 5, title: '业主篮球赛精彩集锦', community: '运动社群', views: '856', engagement: '67', date: '7月2日' }
-                ]
+                ],
+                publishedContent: []
             },
             get(key) {
                 try {
@@ -3048,6 +3115,7 @@
             if (!DataManager.get('brandAssets')) DataManager.set('brandAssets', DataManager._defaults.brandAssets);
             if (!DataManager.get('brandGuides')) DataManager.set('brandGuides', DataManager._defaults.brandGuides);
             if (!DataManager.get('ipRights')) DataManager.set('ipRights', DataManager._defaults.ipRights);
+            if (!DataManager.get('publishedContent')) DataManager.set('publishedContent', DataManager._defaults.publishedContent);
         })();
 
         // ===== 页面切换 =====
@@ -3549,6 +3617,12 @@
 
         // ===== 内容运营页 =====
         function renderContentPage() {
+            // 设置默认日期为今天
+            const dateInput = document.getElementById('publish-date');
+            if (dateInput && !dateInput.value) {
+                const today = new Date();
+                dateInput.value = today.getFullYear() + '-' + String(today.getMonth()+1).padStart(2,'0') + '-' + String(today.getDate()).padStart(2,'0');
+            }
             renderContentCalendar();
             renderContentFiles();
         }
@@ -3557,6 +3631,14 @@
             const cal = document.getElementById('content-calendar');
             if (!cal) return;
             cal.innerHTML = '';
+
+            const records = DataManager.load('publishedContent');
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth();
+            const today = now.getDate();
+
+            // 表头：星期
             const days = ['日', '一', '二', '三', '四', '五', '六'];
             days.forEach(d => {
                 const div = document.createElement('div');
@@ -3565,13 +3647,50 @@
                 cal.appendChild(div);
             });
 
-            const hasContent = [2, 3, 5, 6, 9, 10, 12, 13, 16, 17, 19, 20, 23, 24, 26, 27, 30];
-            for (let i = 1; i <= 35; i++) {
+            // 当月天数
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            const firstDayOfWeek = new Date(year, month, 1).getDay();
+
+            // 前置空白
+            for (let i = 0; i < firstDayOfWeek; i++) {
                 const div = document.createElement('div');
                 div.className = 'cal-day';
-                const has = hasContent.includes(i);
-                if (has) div.classList.add('has-content');
-                div.innerHTML = `<div class="cal-day-num">${i}</div>${has ? '<div><span class="cal-dot dot-wechat"></span><span class="cal-dot dot-xhs"></span></div>' : ''}`;
+                div.style.opacity = '0.2';
+                cal.appendChild(div);
+            }
+
+            // 按日期分组记录
+            const byDate = {};
+            records.forEach(r => {
+                const d = r.date;
+                if (!byDate[d]) byDate[d] = [];
+                byDate[d].push(r);
+            });
+
+            for (let i = 1; i <= daysInMonth; i++) {
+                const div = document.createElement('div');
+                div.className = 'cal-day';
+                const dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(i).padStart(2, '0');
+                const dayRecords = byDate[dateStr] || [];
+
+                if (dayRecords.length > 0) div.classList.add('has-content');
+
+                let innerHTML = `<div class="cal-day-num">${i}</div>`;
+
+                if (dayRecords.length > 0) {
+                    innerHTML += '<div class="cal-content-list">';
+                    dayRecords.forEach(r => {
+                        innerHTML += `
+                            <div class="cal-content-item" title="${r.title} (${r.platformName})">
+                                <span class="cal-platform-dot" style="background:${r.platform==='xiaohongshu'?'#ff2442':r.platform==='wechat'?'#07c160':r.platform==='douyin'?'#fe2c55':'#fa9d3b'}">${r.platformIcon}</span>
+                                <span class="cal-content-title">${r.title.length > 8 ? r.title.substring(0,8)+'…' : r.title}</span>
+                                <button class="cal-delete-btn" onclick="event.stopPropagation();DataManager.remove('publishedContent',${r.id});renderContentCalendar();" title="删除此条记录">✕</button>
+                            </div>`;
+                    });
+                    innerHTML += '</div>';
+                }
+
+                div.innerHTML = innerHTML;
                 cal.appendChild(div);
             }
         }
@@ -4027,24 +4146,40 @@
         function submitPublish() {
             const platform = document.getElementById('publish-platform').value;
             const title = document.getElementById('publish-title').value;
+            const date = document.getElementById('publish-date').value;
             if (!title) { alert('请输入内容标题'); return; }
+            if (!date) { alert('请选择推送日期'); return; }
+
             const platformNames = { xiaohongshu: '小红书', wechat: '微信公众号', douyin: '抖音', video: '视频号' };
-            const typeNames = { article: '图文', image: '单图/海报', video: '短视频', carousel: '轮播图', live: '直播预告' };
-            
-            // 模拟添加到任务列表
-            appData.tasks.push({
-                id: appData.tasks.length + 1,
-                title: '[' + platformNames[platform] + '] ' + title,
-                priority: 'high',
-                module: 'content',
-                deadline: document.getElementById('publish-schedule').value || '2026-07-05',
-                status: 'todo',
-                desc: '平台：' + platformNames[platform] + ' | 类型：' + typeNames[document.getElementById('publish-type').value]
-            });
-            
+            const typeNames = { article: '图文', image: '单图/海报', video: '短视频', carousel: '轮播图', live: '直播' };
+            const platformIcons = { xiaohongshu: '📕', wechat: '💚', douyin: '🎵', video: '🎬' };
+
+            const record = {
+                id: Date.now(),
+                platform,
+                platformName: platformNames[platform],
+                platformIcon: platformIcons[platform],
+                title,
+                type: document.getElementById('publish-type').value,
+                typeName: typeNames[document.getElementById('publish-type').value],
+                date,
+                views: document.getElementById('publish-views').value || '',
+                likes: document.getElementById('publish-likes').value || '',
+                comments: document.getElementById('publish-comments').value || '',
+                note: document.getElementById('publish-note').value || ''
+            };
+
+            DataManager.add('publishedContent', record);
             closeModal('content-publish-modal');
-            alert('✅ 内容已加入发布队列！\n\n平台：' + platformNames[platform] + '\n标题：' + title + '\n状态：待审核\n\n演示模式：正式版将直接推送到对应平台的发布系统。');
-            renderTimeline();
+            renderContentCalendar();
+
+            // 清空表单
+            document.getElementById('publish-title').value = '';
+            document.getElementById('publish-date').value = '';
+            document.getElementById('publish-views').value = '';
+            document.getElementById('publish-likes').value = '';
+            document.getElementById('publish-comments').value = '';
+            document.getElementById('publish-note').value = '';
         }
 
         // ===== 日历导入 =====
@@ -4053,18 +4188,199 @@
                 const nameEl = document.getElementById('calendar-file-name');
                 nameEl.textContent = '✅ 已选择：' + input.files[0].name + ' (' + (input.files[0].size / 1024).toFixed(1) + ' KB)';
                 nameEl.style.display = 'block';
+                // 读取文件内容到文本框
+                const file = input.files[0];
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    try {
+                        let text = e.target.result;
+                        // 简单CSV解析：转成制表符格式显示
+                        text = text.replace(/,/g, '\t');
+                        document.getElementById('import-table-data').value = text;
+                    } catch(err) {
+                        alert('文件读取失败，请尝试复制粘贴方式');
+                    }
+                };
+                reader.readAsText(file);
             }
         }
 
+        // 解析粘贴的表格数据
+        function parseTableData(text) {
+            const lines = text.trim().split('\n').filter(l => l.trim());
+            if (lines.length < 2) return [];
+
+            // 检测分隔符
+            const firstLine = lines[0];
+            const sep = firstLine.includes('\t') ? '\t' : firstLine.includes(',') ? ',' : null;
+            if (!sep) return [];
+
+            const headers = firstLine.split(sep).map(h => h.trim().toLowerCase());
+            const records = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const cols = lines[i].split(sep).map(c => c.trim());
+                if (cols.length < 3) continue;
+
+                // 匹配列名
+                const getDate = () => {
+                    for (const h of ['日期', 'date', '推送日期', '发布日期', '时间']) {
+                        const idx = headers.indexOf(h);
+                        if (idx >= 0) return normalizeDate(cols[idx]);
+                    }
+                    return cols[0] || '';
+                };
+                const getPlatform = () => {
+                    for (const h of ['平台', 'platform', '发布平台', '渠道']) {
+                        const idx = headers.indexOf(h);
+                        if (idx >= 0) return mapPlatform(cols[idx]);
+                    }
+                    return 'xiaohongshu';
+                };
+                const getTitle = () => {
+                    for (const h of ['标题', 'title', '内容标题', '主题', '文案']) {
+                        const idx = headers.indexOf(h);
+                        if (idx >= 0) return cols[idx];
+                    }
+                    return cols[1] || '未命名';
+                };
+                const getType = () => {
+                    for (const h of ['类型', 'type', '内容类型', '形式']) {
+                        const idx = headers.indexOf(h);
+                        if (idx >= 0) return mapType(cols[idx]);
+                    }
+                    return 'article';
+                };
+                const getVal = (names, fallback) => {
+                    for (const n of names) {
+                        const idx = headers.indexOf(n);
+                        if (idx >= 0) return cols[idx] || '';
+                    }
+                    return fallback || '';
+                };
+
+                records.push({
+                    id: Date.now() + i,
+                    platform: getPlatform(),
+                    platformName: { xiaohongshu:'小红书', wechat:'微信公众号', douyin:'抖音', video:'视频号' }[getPlatform()],
+                    platformIcon: { xiaohongshu:'📕', wechat:'💚', douyin:'🎵', video:'🎬' }[getPlatform()],
+                    title: getTitle(),
+                    type: getType(),
+                    typeName: { article:'图文', image:'单图/海报', video:'短视频', carousel:'轮播图', live:'直播' }[getType()],
+                    date: getDate(),
+                    views: getVal(['阅读量','浏览量','播放量','views','reads'], ''),
+                    likes: getVal(['点赞数','点赞','likes','赞'], ''),
+                    comments: getVal(['评论数','评论','comments'], ''),
+                    note: getVal(['备注','remark','说明','note'], '')
+                });
+            }
+            return records;
+        }
+
+        function normalizeDate(val) {
+            if (!val) return '';
+            val = val.trim().replace(/[年月]/g, '-').replace(/日/g, '');
+            // 支持 2026-07-02 / 2026/7/2 / 7.2 / 7-2 格式
+            if (/^\d{4}[-/]\d{1,2}[-/]\d{1,2}$/.test(val)) {
+                return val.replace(/\//g, '-').replace(/-(\d)-/g, '-0$1-').replace(/-(\d)$/g, '-0$1');
+            }
+            if (/^\d{1,2}[.\-/]\d{1,2}$/.test(val)) {
+                const parts = val.split(/[.\-/]/);
+                return new Date().getFullYear() + '-' + String(parts[0]).padStart(2,'0') + '-' + String(parts[1]).padStart(2,'0');
+            }
+            return val;
+        }
+
+        function mapPlatform(val) {
+            if (!val) return 'xiaohongshu';
+            v = val.toLowerCase();
+            if (v.includes('小红书') || v.includes('xhs') || v.includes('xiaohongshu')) return 'xiaohongshu';
+            if (v.includes('微信') || v.includes('wechat')) return 'wechat';
+            if (v.includes('抖音') || v.includes('douyin') || v.includes('tiktok')) return 'douyin';
+            if (v.includes('视频号') || v.includes('video') || v.includes('channels')) return 'video';
+            return 'xiaohongshu';
+        }
+
+        function mapType(val) {
+            if (!val) return 'article';
+            v = val.toLowerCase();
+            if (v.includes('图文') || v.includes('文章') || v.includes('article') || v.includes('笔记')) return 'article';
+            if (v.includes('单图') || v.includes('海报') || v.includes('image') || v.includes('图片')) return 'image';
+            if (v.includes('视频') || v.includes('短视频') || v.includes('video')) return 'video';
+            if (v.includes('轮播') || v.includes('carousel')) return 'carousel';
+            if (v.includes('直播') || v.includes('live')) return 'live';
+            return 'article';
+        }
+
+        // 预览导入数据
+        function previewImportData() {
+            const text = document.getElementById('import-table-data').value.trim();
+            if (!text) { alert('请先粘贴或上传数据'); return; }
+
+            const records = parseTableData(text);
+            if (records.length === 0) { alert('未能解析出有效数据，请检查格式。\n\n表头需包含：日期、平台、标题'); return; }
+
+            document.getElementById('import-count').textContent = records.length;
+
+            let html = '<table style="width:100%;border-collapse:collapse;font-size:12px;">';
+            html += '<tr style="background:#1e293b;color:#94a3b8;"><th style="padding:6px;border-bottom:1px solid #334155;">日期</th><th style="padding:6px;border-bottom:1px solid #334155;">平台</th><th style="padding:6px;border-bottom:1px solid #334155;">标题</th><th style="padding:6px;border-bottom:1px solid #334155;">类型</th></tr>';
+            records.slice(0, 20).forEach(r => {
+                html += `<tr style="border-bottom:1px solid #1e293b;">
+                    <td style="padding:6px;color:#a5b4fc;">${r.date}</td>
+                    <td style="padding:6px;">${r.platformIcon} ${r.platformName}</td>
+                    <td style="padding:6px;color:#e2e8f0;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${r.title}">${r.title}</td>
+                    <td style="padding:6px;color:#94a3b8;">${r.typeName}</td>
+                </tr>`;
+            });
+            if (records.length > 20) html += `<tr><td colspan="4" style="padding:6px;text-align:center;color:#64748b;">... 还有 ${records.length - 20} 条</td></tr>`;
+            html += '</table>';
+
+            document.getElementById('import-preview-table').innerHTML = html;
+            document.getElementById('import-preview-area').style.display = 'block';
+        }
+
+        // 执行批量导入
         function importCalendar() {
-            const fileInput = document.getElementById('calendar-file-input');
-            if (!fileInput.files || !fileInput.files[0]) {
-                alert('请先选择要导入的文件');
+            const text = document.getElementById('import-table-data').value.trim();
+
+            let records = [];
+            if (text) {
+                records = parseTableData(text);
+            }
+
+            if (records.length === 0) {
+                // 尝试从文件获取
+                const fileInput = document.getElementById('calendar-file-input');
+                if (fileInput.files && fileInput.files[0]) {
+                    alert('文件已选择但未解析，请先点「预览数据」检查格式');
+                    return;
+                }
+                alert('没有可导入的数据，请先粘贴表格数据或上传文件');
                 return;
             }
-            const fname = fileInput.files[0].name;
+
+            // 写入 DataManager
+            const existing = DataManager.load('publishedContent');
+            let added = 0;
+            records.forEach(r => {
+                // 避免完全重复
+                const dup = existing.find(e => e.date === r.date && e.title === r.title && e.platform === r.platform);
+                if (!dup) {
+                    r.id = Date.now() + Math.random();
+                    DataManager.add('publishedContent', r);
+                    added++;
+                }
+            });
+
             closeModal('calendar-import-modal');
-            alert('📅 日历导入成功！\n\n文件：' + fname + '\n识别条目：8 条日程\n新增活动：5 个\n跳过重复：3 个\n\n演示模式：实际使用时将解析文件中的日程数据并自动填充到社群日历和内容排期中。');
+            renderContentCalendar();
+
+            // 清空
+            document.getElementById('import-table-data').value = '';
+            document.getElementById('calendar-file-name').style.display = 'none';
+            document.getElementById('import-preview-area').style.display = 'none';
+
+            alert(`✅ 导入完成！\n\n成功导入：${added} 条记录\n跳过重复：${records.length - added} 条\n\n数据已保存到本月内容日历中。`);
         }
 
         // ===== 策略编辑 =====
