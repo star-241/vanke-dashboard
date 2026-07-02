@@ -1,0 +1,15 @@
+[build]
+  command = ""
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+# 环境变量配置说明（需在 Netlify 后台手动填写）：
+# WECHAT_APP_ID     = 微信公众号开发者ID
+# WECHAT_APP_SECRET = 微信公众号开发者密码
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
