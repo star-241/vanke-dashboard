@@ -1557,7 +1557,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title"><span class="dot"></span>📅 工作计划</div>
-                        <button class="header-btn" onclick="addCommunity()">+ 新建社群</button>
+                        <button class="header-btn" onclick="addPlanItem()">+ 新建计划</button>
                     </div>
                     <div class="panel-body">
                         <ul class="timeline" id="timeline-list"></ul>
@@ -3068,10 +3068,42 @@
                     { name: 'slogan商标申请受理书', date: '2026-01-10' }
                 ],
                 monitors: [
-                    { id: 1, name: '竞品A官方号', platform: '小红书', followers: '15.2W', growth: '+8.3%', category: 'competitor', avatar: '🏠', lastPost: '2小时前' },
-                    { id: 2, name: '竞品B房产', platform: '公众号', followers: '28.5W', growth: '+3.1%', category: 'competitor', avatar: '🏢', lastPost: '1天前' },
-                    { id: 3, name: '房产大V李四', platform: '小红书', followers: '22.3W', growth: '+12.5%', category: 'kol', avatar: '👤', lastPost: '5小时前' },
-                    { id: 4, name: '本地楼市观察', platform: '公众号', followers: '35.8W', growth: '+5.2%', category: 'media', avatar: '📊', lastPost: '3小时前' }
+                    { id: 1, name: '招商·臻城', platform: '小红书', followers: '15.2W', growth: '+8.3%', category: 'competitor', avatar: '🏠', lastPost: '2小时前',
+                      homeUrl: 'https://www.xiaohongshu.com/search_result?keyword=招商臻城',
+                      recentPosts: [
+                        { title: '臻城交付季｜实景比效果图还惊艳！', engagement: '3.2W', url: 'https://www.xiaohongshu.com/search_result?keyword=臻城交付' },
+                        { title: '业主访谈：为什么选择了臻城？', engagement: '1.8K', url: 'https://www.xiaohongshu.com/search_result?keyword=臻城业主' }
+                      ]},
+                    { id: 2, name: '华润置地·西安', platform: '公众号', followers: '28.5W', growth: '+3.1%', category: 'competitor', avatar: '🏢', lastPost: '1天前',
+                      homeUrl: 'https://weixin.sogou.com/weixin?type=2&query=华润置地西安',
+                      recentPosts: [
+                        { title: '华润年中交付报告：品质兑现时刻', engagement: '5.6K', url: 'https://weixin.sogou.com/weixin?type=2&query=华润交付' },
+                        { title: '润系产品线全新解读', engagement: '2.1K', url: 'https://weixin.sogou.com/weixin?type=2&query=华润产品线' }
+                      ]},
+                    { id: 3, name: '龙湖·天曜', platform: '小红书', followers: '22.3W', growth: '+12.5%', category: 'competitor', avatar: '🔷', lastPost: '5小时前',
+                      homeUrl: 'https://www.xiaohongshu.com/search_result?keyword=龙湖天曜西安',
+                      recentPosts: [
+                        { title: '天曜园林实拍｜这就是豪宅该有的样子', engagement: '8.7K', url: 'https://www.xiaohongshu.com/search_result?keyword=天曜园林' },
+                        { title: '龙湖物业服务体系全面升级', engagement: '4.3K', url: 'https://www.xiaohongshu.com/search_result?keyword=龙湖物业' }
+                      ]},
+                    { id: 4, name: '本地楼市观察', platform: '公众号', followers: '35.8W', growth: '+5.2%', category: 'media', avatar: '📊', lastPost: '3小时前',
+                      homeUrl: 'https://weixin.sogou.com/weixin?type=2&query=本地楼市观察',
+                      recentPosts: [
+                        { title: '2026下半年西安楼市走向预判', engagement: '12K', url: 'https://weixin.sogou.com/weixin?type=2&query=西安楼市预判' },
+                        { title: 'LPR下调后各盘反应汇总', engagement: '8.9K', url: 'https://weixin.sogou.com/weixin?type=2&query=LPR下调反应' }
+                      ]},
+                    { id: 5, name: '麓湖生态城', platform: '小红书', followers: '42.1W', growth: '+18.2%', category: 'competitor', avatar: '🌊', lastPost: '6小时前',
+                      homeUrl: 'https://www.xiaohongshu.com/search_result?keyword=麓湖生态城',
+                      recentPosts: [
+                        { title: '麓湖社群运营方法论拆解', engagement: '15W', url: 'https://www.xiaohongshu.com/search_result?keyword=麓湖社群' },
+                        { title: '麓湖A4美术馆新展开幕', engagement: '6.2K', url: 'https://www.xiaohongshu.com/search_result?keyword=麓湖美术馆' }
+                      ]},
+                    { id: 6, name: '阿那亚', platform: '小红书', followers: '38.6W', growth: '+15.7%', category: 'competitor', avatar: '🏖️', lastPost: '8小时前',
+                      homeUrl: 'https://www.xiaohongshu.com/search_result?keyword=阿那亚',
+                      recentPosts: [
+                        { title: '阿那亚戏剧节2026全攻略', engagement: '22W', url: 'https://www.xiaohongshu.com/search_result?keyword=阿那亚戏剧节' },
+                        { title: '从荒滩到精神地标：阿那亚十年', engagement: '11W', url: 'https://www.xiaohongshu.com/search_result?keyword=阿那亚十年' }
+                      ]}
                 ],
                 communities: [
                     { id: 1, name: '好有趣·业主群', type: 'owner', typeText: '业主社群', members: 856, activeRate: 68, avatar: '🏠', tags: ['业主', '高品质', '活跃'], growth: '+12%' },
@@ -3188,12 +3220,16 @@
         }
 
         function renderAll() {
-            renderTimeline();
-            renderViral();
-            renderCampaigns();
-            renderNews();
-            renderBrandEvents();
-            renderReviewPage();
+            // 逐个渲染，单个失败不影响其他
+            const renders = [
+                ['renderTimeline', () => { try{renderTimeline();}catch(e){console.error('renderTimeline:',e)} }],
+                ['renderViral', () => { try{renderViral();}catch(e){console.error('renderViral:',e)} }],
+                ['renderCampaigns', () => { try{renderCampaigns();}catch(e){console.error('renderCampaigns:',e)} }],
+                ['renderNews', () => { try{renderNews();}catch(e){console.error('renderNews:',e)} }],
+                ['renderBrandEvents', () => { try{renderBrandEvents();}catch(e){console.error('renderBrandEvents:',e)} }],
+                ['renderReviewPage', () => { try{renderReviewPage();}catch(e){console.error('renderReviewPage:',e)} }]
+            ];
+            renders.forEach(([name, fn]) => fn());
         }
 
         // ===== 工作计划 =====
@@ -3201,9 +3237,26 @@
             const list = document.getElementById('timeline-list');
             if (!list) return;
             list.innerHTML = '';
-            const sorted = [...appData.tasks].sort((a, b) => {
+
+            // 优先从DataManager读取，fallback到appData.tasks
+            let tasks = DataManager.load('planItems');
+            if (!tasks || tasks.length === 0) {
+                // 初始化默认数据
+                const defaults = [
+                    { id: 1, title: '社群7月活动排期确认', deadline: '2026-07-04', module: '社群', priority: 'high', status: 'todo' },
+                    { id: 2, title: 'Q3品牌策略方案初稿', deadline: '2026-07-08', module: '品牌', priority: 'high', status: 'progress' },
+                    { id: 3, title: '小红书7月内容日历确认', deadline: '2026-07-03', module: '内容', priority: 'high', status: 'todo' },
+                    { id: 4, title: '完成公众号API自动化对接', deadline: '2026-07-05', module: '自动化', priority: 'high', status: 'progress' },
+                    { id: 5, title: '自动化流程压力测试', deadline: '2026-07-18', module: '自动化', priority: 'medium', status: 'todo' },
+                    { id: 6, title: 'CRM客户数据清洗', deadline: '2026-07-12', module: 'CRM', priority: 'medium', status: 'todo' }
+                ];
+                DataManager.set('planItems', defaults);
+                tasks = defaults;
+            }
+
+            const sorted = [...tasks].sort((a, b) => {
                 const order = { high: 0, medium: 1, low: 2 };
-                return order[a.priority] - order[b.priority] || a.status === 'done' ? 1 : -1;
+                return order[a.priority] - order[b.priority] || (a.status === 'done' ? 1 : -1);
             });
             sorted.forEach(task => {
                 const li = document.createElement('li');
@@ -3211,12 +3264,58 @@
                 li.innerHTML = `
                     <div class="timeline-content">
                         <div class="timeline-title">${task.title}</div>
-                        <div class="timeline-meta">${task.deadline} · ${task.module === 'content' ? '内容' : task.module === 'brand' ? '品牌' : task.module === 'community' ? '社群' : task.module === 'automation' ? '自动化' : 'CRM'}</div>
+                        <div class="timeline-meta">${task.deadline} · ${task.module === 'content' ? '内容' : task.module === 'brand' ? '品牌' : task.module === 'community' ? '社群' : task.module === 'automation' ? '自动化' : task.module || 'CRM'}</div>
                     </div>
                     <span class="timeline-tag tag-${task.status}">${statusText(task.status)}</span>
+                    <button onclick="event.stopPropagation();deletePlanItem(${task.id});" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;color:#f87171;font-size:14px;cursor:pointer;opacity:0;transition:opacity.0.2s;padding:2px;" class="tl-delete-btn">✕</button>
                 `;
+                li.style.position = 'relative';
+                li.onmouseenter = () => li.querySelector('.tl-delete-btn').style.opacity = '1';
+                li.onmouseleave = () => li.querySelector('.tl-delete-btn').style.opacity = '0';
+                // 点击切换状态
+                li.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('tl-delete-btn')) return;
+                    const t = tasks.find(x => x.id === task.id);
+                    if (t) {
+                        if (t.status === 'todo') t.status = 'progress';
+                        else if (t.status === 'progress') t.status = 'done';
+                        else if (t.status === 'done') t.status = 'todo';
+                        DataManager.set('planItems', tasks);
+                        renderTimeline();
+                    }
+                });
                 list.appendChild(li);
             });
+        }
+
+        function addPlanItem() {
+            const title = prompt('📋 新建计划\n\n请输入计划名称：');
+            if (!title) return;
+            const dateStr = prompt('截止日期（格式：2026-07-15）：') || new Date().toISOString().slice(0,10);
+            const modules = ['品牌', '社群', '内容', '自动化', 'CRM', '其他'];
+            const modIdx = prompt('所属模块：\n1=品牌 2=社群 3=内容 4=自动化 5=CRM 6=其他') || '1';
+            const priIdx = prompt('优先级：\n1=高 2=中 3=低') || '1';
+            const priorities = ['high','medium','low'];
+
+            const tasks = DataManager.load('planItems') || [];
+            tasks.push({
+                id: Date.now(),
+                title,
+                deadline: dateStr,
+                module: modules[parseInt(modIdx)-1] || '其他',
+                priority: priorities[parseInt(priIdx)-1] || 'medium',
+                status: 'todo'
+            });
+            DataManager.set('planItems', tasks);
+            renderTimeline();
+        }
+
+        function deletePlanItem(id) {
+            if (!confirm('确定删除此计划？')) return;
+            let tasks = DataManager.load('planItems') || [];
+            tasks = tasks.filter(t => t.id !== id);
+            DataManager.set('planItems', tasks);
+            renderTimeline();
         }
 
         function statusText(s) {
@@ -3854,28 +3953,31 @@
                 guides.forEach(g => {
                     const li = document.createElement('li');
                     li.className = 'kb-file-item';
+                    li.style.cursor = 'pointer';
                     li.innerHTML = `
                         <div class="kb-file-icon">📄</div>
                         <div class="kb-file-info">
                             <div class="kb-file-name">${g.name}</div>
-                            <div class="kb-file-meta">${g.size || '--'} · ${g.date}</div>
+                            <div class="kb-file-meta">${g.size || '--'} · ${g.date || '--'}</div>
                         </div>
                         <div class="kb-file-actions">
-                            <button class="kb-action-btn">查看</button>
-                            <button class="kb-action-btn" style="color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="DataManager.remove('brandGuides',${g.id});this.closest('li').remove();">删除</button>
+                            <button class="kb-action-btn" onclick="event.stopPropagation();viewGuideDetail(${g.id});">查看</button>
+                            <button class="kb-action-btn" style="color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="event.stopPropagation();DataManager.remove('brandGuides',${g.id});renderBrandPage();">删除</button>
                         </div>
                     `;
+                    li.onclick = () => viewGuideDetail(g.id);
                     guideList.appendChild(li);
                 });
-                // 更新"查看全部"按钮为可新增
+                // 更新按钮为可新增
                 const viewAllBtn = guideList.closest('.panel').querySelector('.panel-header .header-btn');
                 if (viewAllBtn && !viewAllBtn.hasAttribute('data-crud')) {
                     viewAllBtn.setAttribute('data-crud','1');
                     viewAllBtn.textContent = '+ 新增规范';
                     viewAllBtn.onclick = function() {
-                        const name = prompt('请输入规范文档名称：');
+                        const name = prompt('📄 新增品牌规范\n\n请输入文档名称：');
                         if (!name) return;
-                        DataManager.add('brandGuides', { name, size: '新文件', date: new Date().toISOString().slice(0,10) });
+                        const size = prompt('文件大小（选填，如 5.2MB）：') || '新文件';
+                        DataManager.add('brandGuides', { name, size, date: new Date().toISOString().slice(0,10) });
                         renderBrandPage();
                     };
                 }
@@ -3888,22 +3990,81 @@
                 ips.forEach(ip => {
                     const li = document.createElement('li');
                     li.className = 'kb-file-item';
+                    li.style.cursor = 'pointer';
                     li.innerHTML = `
                         <div class="kb-file-icon">©️</div>
                         <div class="kb-file-info">
                             <div class="kb-file-name">${ip.name}</div>
-                            <div class="kb-file-meta">${ip.date}</div>
+                            <div class="kb-file-meta">${ip.date || '--'} ${ip.number ? '· ' + ip.number : ''} ${ip.expiry ? '· 有效期至' + ip.expiry : ''}</div>
                         </div>
                         <div class="kb-file-actions">
-                            <button class="kb-action-btn">查看</button>
-                            <button class="kb-action-btn" style="color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="DataManager.remove('ipRights',${ip.id});this.closest('li').remove();">删除</button>
+                            <button class="kb-action-btn" onclick="event.stopPropagation();viewIPDetail(${ip.id});">查看</button>
+                            <button class="kb-action-btn" style="color:#f87171;border-color:rgba(239,68,68,0.3);" onclick="event.stopPropagation();DataManager.remove('ipRights',${ip.id});renderBrandPage();">删除</button>
                         </div>
                     `;
+                    li.onclick = () => viewIPDetail(ip.id);
                     ipList.appendChild(li);
                 });
+                // 更新"+ 新增"按钮
+                const ipAddBtn = ipList.closest('.panel').querySelector('.panel-header .header-btn');
+                if (ipAddBtn && !ipAddBtn.hasAttribute('data-crud')) {
+                    ipAddBtn.setAttribute('data-crud','1');
+                    // 保持原有onclick（打开弹窗）
+                }
             }
 
             renderMonitors();
+        }
+
+        // 查看品牌规范详情
+        function viewGuideDetail(id) {
+            const guides = DataManager.load('brandGuides');
+            const g = guides.find(x => x.id === id);
+            if (!g) return;
+            document.getElementById('detail-modal-title').textContent = '📄 品牌规范详情';
+            document.getElementById('detail-modal-body').innerHTML = `
+                <div style="padding: 16px; background: rgba(99,102,241,0.06); border-radius: 12px; margin-bottom: 16px;">
+                    <div style="font-size: 20px; font-weight: 700; color: #e2e8f0; margin-bottom: 8px;">${g.name}</div>
+                    <div style="display:flex; gap: 16px; font-size: 13px; color: #94a3b8;">
+                        <span>📦 ${g.size || '--'}</span>
+                        <span>📅 ${g.date || '--'}</span>
+                    </div>
+                </div>
+                <div style="font-size: 13px; color: #cbd5e1; line-height: 1.8; padding: 12px; background: rgba(15,23,42,0.5); border-radius: 10px; border-left: 3px solid #6366f1;">
+                    <div style="font-size: 12px; color: #64748b; margin-bottom: 6px;">📋 文档说明</div>
+                    此为品牌规范文档「<strong>${g.name}</strong>」的记录条目。<br><br>
+                    💡 <strong>提示：</strong>当前为演示模式，文件内容以记录形式管理。正式部署后可对接云存储服务实现真实文件预览和下载。
+                </div>
+                <div style="margin-top: 16px; display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="flex:1;" onclick="closeModal('detail-modal')">关闭</button>
+                </div>
+            `;
+            openModal('detail-modal');
+        }
+
+        // 查看知识产权详情
+        function viewIPDetail(id) {
+            const ips = DataManager.load('ipRights');
+            const ip = ips.find(x => x.id === id);
+            if (!ip) return;
+            document.getElementById('detail-modal-title').textContent = '©️ 知识产权详情';
+            document.getElementById('detail-modal-body').innerHTML = `
+                <div style="padding: 16px; background: rgba(139,92,246,0.06); border-radius: 12px; margin-bottom: 16px;">
+                    <div style="font-size: 18px; font-weight: 700; color: #e2e8f0; margin-bottom: 8px;">${ip.name}</div>
+                    <div style="display:flex; gap: 12px; flex-wrap: wrap; font-size: 12px; color: #94a3b8;">
+                        ${ip.type ? '<span style="padding:3px 10px;border-radius:12px;background:rgba(139,92,246,0.12);color:#a78bfa;">' + ip.typeName + '</span>' : ''}
+                        ${ip.number ? '<span>🔢 ' + ip.number + '</span>' : ''}
+                        ${ip.date ? '<span>📅 ' + ip.date + '</span>' : ''}
+                        ${ip.expiry ? '<span>⏰ 有效期至 ' + ip.expiry + '</span>' : ''}
+                        ${ip.note ? '<span>📝 ' + ip.note + '</span>' : ''}
+                    </div>
+                </div>
+                ${ip.note ? `<div style="font-size: 13px; color: #cbd5e1; line-height: 1.7; padding: 12px; background: rgba(15,23,42,0.5); border-radius: 10px;">${ip.note}</div>` : ''}
+                <div style="margin-top: 16px; display: flex; gap: 10px;">
+                    <button class="btn btn-primary" style="flex:1;" onclick="closeModal('detail-modal')">关闭</button>
+                </div>
+            `;
+            openModal('detail-modal');
         }
 
         function renderMonitors() {
@@ -3914,29 +4075,50 @@
             monitors.forEach(m => {
                 const div = document.createElement('div');
                 div.className = 'campaign-card';
-                div.style.cssText = 'position: relative;';
+                div.style.cssText = 'position: relative; cursor: pointer;';
                 const catTag = m.category === 'competitor' ? '竞品' : m.category === 'kol' ? 'KOL' : '媒体';
+                const posts = m.recentPosts || [];
+
+                let postsHtml = '';
+                if (posts.length > 0) {
+                    postsHtml = '<div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(51,65,85,0.5);">';
+                    posts.forEach(p => {
+                        const pUrl = p.url || '#';
+                        postsHtml += `
+                            <a href="${pUrl}" target="_blank" onclick="event.stopPropagation();" style="display:block; padding: 6px 8px; margin: 4px 0; background: rgba(15,23,42,0.5); border-radius: 6px; font-size: 11px; color: #94a3b8; text-decoration: none; transition: all 0.15s;" onmouseover="this.style.background='rgba(30,41,59,0.8)';this.style.color='#e2e8f0'" onmouseout="this.style.background='rgba(15,23,42,0.5)';this.style.color='#94a3b8'">
+                                <span style="color: #a5b4fc;">📌</span> ${p.title}
+                                <span style="float:right; color: #64748b;">${p.engagement || ''}</span>
+                            </a>`;
+                    });
+                    postsHtml += '</div>';
+                }
+
                 div.innerHTML = `
-                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
                         <div style="width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)); display: flex; align-items: center; justify-content: center; font-size: 18px;">${m.avatar || '📢'}</div>
                         <div style="flex: 1;">
                             <div style="font-weight: 600; font-size: 14px;">${m.name}</div>
-                            <div style="font-size: 12px; color: var(--text-muted);">${m.platform} · 最近发布 ${m.lastPost || '-'}</div>
+                            <div style="font-size: 11px; color: var(--text-muted);">${m.platform} · 最近发布 ${m.lastPost || '-'}</div>
                         </div>
                         <span class="timeline-tag ${m.category === 'competitor' ? 'tag-todo' : 'tag-progress'}">${catTag}</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between; font-size: 12px;">
                         <span style="color: var(--text-muted);">粉丝</span>
                         <span style="font-weight: 600;">${m.followers}</span>
-                    </div>
-                    <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 4px;">
                         <span style="color: var(--text-muted);">增长</span>
                         <span style="font-weight: 600; color: var(--accent-green);">${m.growth}</span>
                     </div>
-                    <button onclick="if(confirm('确认删除「${m.name}」？')){DataManager.remove('monitors',${m.id});renderMonitors();}" style="position:absolute;top:8px;right:8px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;display:none;">✕ 删除</button>
+                    ${postsHtml}
+                    <button onclick="event.stopPropagation();if(confirm('确认删除「${m.name}」？')){DataManager.remove('monitors',${m.id});renderMonitors();}" style="position:absolute;top:8px;right:8px;background:rgba(239,68,68,0.15);color:#f87171;border:1px solid rgba(239,68,68,0.3);border-radius:6px;padding:3px 10px;font-size:11px;cursor:pointer;display:none;">✕ 删除</button>
                 `;
-                div.onmouseenter = () => div.querySelector('button').style.display = '';
-                div.onmouseleave = () => div.querySelector('button').style.display = 'none';
+
+                // 点击跳转到账号主页
+                if (m.homeUrl) {
+                    div.onclick = () => window.open(m.homeUrl, '_blank');
+                }
+
+                div.onmouseenter = () => { div.querySelector('button').style.display = ''; };
+                div.onmouseleave = () => { div.querySelector('button').style.display = 'none'; };
                 grid.appendChild(div);
             });
         }
@@ -4759,28 +4941,29 @@ function filterReviewItems() {
             const btn = evt ? (evt.target.closest('button') || evt.target) : null;
             if (btn) { btn.classList.add('spinning'); btn.style.pointerEvents = 'none'; }
 
-            // 模拟数据更新
-            appData.viral.forEach((item, i) => {
-                const delta = Math.floor(Math.random() * 500) - 200;
-                const viewsNum = parseInt(item.views.replace(/[^0-9]/g, '')) + Math.floor(Math.random() * 5000);
-                const engNum = parseFloat(item.engagement.replace(/[^0-9.]/g, '')) + (Math.random() * 1.5 - 0.5);
-                item.views = viewsNum >= 10000 ? Math.floor(viewsNum/10000) + 'W+' : viewsNum + '+';
-                item.engagement = engNum.toFixed(1) >= 1 ? Math.floor(engNum) + 'K' : (engNum * 1000).toFixed(0);
-                item.date = i === 0 ? '刚刚' : item.date;
-            });
+            try {
+                // 模拟数据更新
+                appData.viral.forEach((item, i) => {
+                    const viewsNum = parseInt(item.views.replace(/[^0-9]/g, '')) + Math.floor(Math.random() * 5000);
+                    const engNum = parseFloat(item.engagement.replace(/[^0-9.]/g, '')) + (Math.random() * 1.5 - 0.5);
+                    item.views = viewsNum >= 10000 ? Math.floor(viewsNum/10000) + 'W+' : viewsNum + '+';
+                    item.engagement = engNum.toFixed(1) >= 1 ? Math.floor(engNum) + 'K' : (engNum * 1000).toFixed(0);
+                    item.date = i === 0 ? '刚刚' : item.date;
+                });
 
-            // 更新统计卡片数据
-            const statsEls = document.querySelectorAll('.stat-number');
-            if (statsEls.length >= 6) {
-                statsEls[0].textContent = parseInt(statsEls[0].textContent) + Math.floor(Math.random() * 3);
-                statsEls[1].textContent = parseInt(statsEls[1].textContent) + Math.floor(Math.random() * 20);
+                // 更新统计卡片数据
+                const statsEls = document.querySelectorAll('.stat-number');
+                if (statsEls.length >= 6) {
+                    statsEls[0].textContent = parseInt(statsEls[0].textContent) + Math.floor(Math.random() * 3);
+                    statsEls[1].textContent = parseInt(statsEls[1].textContent) + Math.floor(Math.random() * 20);
+                }
+            } catch(e) {
+                console.error('refresh data error:', e);
             }
 
             setTimeout(() => {
-                if (typeof renderAll === 'function') renderAll();
-                if (typeof renderViral === 'function') renderViral();
-                if (typeof renderDataCenter === 'function') renderDataCenter();
-                if (typeof renderContentPage === 'function') renderContentPage();
+                renderAll();
+                renderContentPage();
                 if (btn) { btn.classList.remove('spinning'); btn.style.pointerEvents = ''; }
             }, 600);
         }
